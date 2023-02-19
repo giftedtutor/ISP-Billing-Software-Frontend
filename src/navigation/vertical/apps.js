@@ -14,5 +14,13 @@ export default [
     icon: <Users size={20} />,
     navLink: '/ISPBS/apps/customers/list'
 
+  },
+  
+  {
+    id: 'package',
+    title: 'Packages',
+    icon: <Package size={20} />,
+    navLink: '/ISPBS/apps/package/list'
+
   }
 ]
