@@ -16,14 +16,15 @@ import Cookies from 'js-cookie'
 import baseURL from "../../../../baseURL/baseURL.js"
 import { toast } from 'react-toastify'
 
-const SidebarAdd = ({ open, toggleSidebarAdd }) => {
+const SidebarEdit = ({ open, toggleSidebarEdit, editID }) => {
+  console.log('Edit ID::::', editID)
   const { register, errors, handleSubmit } = useForm()
   const [packageID, setpackageID] = useState('')
   const [data, setData] = useState(null)
   const [packageOptions, setPackageOptions] = useState([])
   const [cnicFrontPic, setCnicFrontPic] = useState('')
   const [cnicBackPic, setCnicBackPic] = useState('')
-
+  const [editData, setEditData] = useState({})
   const uploadImageFunction = (File, type) => {
     const formData = new FormData()
     formData.append("files", File)
@@ -65,13 +66,28 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
       }).catch((err) => console.log(err))
 
   }, [])
+
+  useEffect(() => {
+
+      
+    axios.get(`${baseURL}/customers/editCustomer?customer_id=${editID}`)
+    .then((response) => {
+      console.log('::::::', response.data)
+      setEditData(response.data)
+      setCnicBackPic(response.data.cnic_back_pictrue)
+      setCnicFrontPic(response.data.cnic_front_pictrue)
+      setpackageID(response.data.package_id)
+    }).catch((err) => console.log(err))
+  }, [editID])
+
   const submitForm = (data, package_id) => {
 
     const DATA = {
       user_id: Cookies.get("id"),
+      _id: editData?._id,
       name: data.name,
       father_name: data.father_name,
-      package_id,
+      package_id : package_id === "" ? packageID : package_id,
       email: data.email,
       phone_no: data.phone_no,
       address: data.address,
@@ -79,12 +95,14 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
       cnic_front_pictrue: cnicFrontPic,
       cnic_back_pictrue: cnicBackPic
     }
-    axios.post(`${baseURL}/customers/addCustomer`, DATA)
+    axios.put(`${baseURL}/customers/updateCustomer`, DATA)
       .then(res => {
+        console.log('UPDATE::::', res.data)
         if (res.data.status === "ok") {
-          toggleSidebarAdd()
+          toast(res.data.message)
+          toggleSidebarEdit()
           setpackageID('')
-          toast(res.data.messsage)
+        
         } else {
           console.log("Somthing went Wrong - Error")
         }
@@ -109,7 +127,7 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
       title='Add New Customer'
       headerClassName='mb-1'
       contentClassName='pt-0'
-      toggleSidebar={toggleSidebarAdd}
+      toggleSidebar={toggleSidebarEdit}
       onClosed={handleSidebarClosed}
     >
 
@@ -119,6 +137,7 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
           <Input
             id='name'
             name='name'
+            defaultValue={editData?.name}
             innerRef={register({ required: true })}
             invalid={errors.name && true}
             placeholder='Customer Name'
@@ -129,6 +148,7 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
           <Input
             id='father_name'
             name='father_name'
+            defaultValue={editData?.father_name}
             innerRef={register({ required: true })}
             invalid={errors.father_name && true}
             placeholder='Father Name'
@@ -140,6 +160,7 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
             id='email'
             name='email'
             type="email"
+            defaultValue={editData?.email}
             placeholder='example@gmail.com'
             innerRef={register({ required: true })}
             invalid={errors.email && true}
@@ -150,6 +171,7 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
           <Input
             id='phone_no'
             name='phone_no'
+            defaultValue={editData?.phone_no}
             innerRef={register({ required: true })}
             invalid={errors.phone_no && true}
             placeholder='Phone No'
@@ -160,6 +182,7 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
           <Input
             id='address'
             name='address'
+            defaultValue={editData?.address}
             innerRef={register({ required: true })}
             invalid={errors.address && true}
             placeholder='Address'
@@ -175,6 +198,7 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
             type="text"
             name='package_id'
             id='package_id'
+            defaultValue={editData?.package_id}
             innerRef={register({ required: true })}
             invalid={errors.package_id && true}
             onChange={(e) => {
@@ -189,6 +213,7 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
           <Input
             id='cnic'
             name='cnic'
+            defaultValue={editData?.cnic}
             innerRef={register({ required: true })}
             invalid={errors.cnic && true}
             placeholder='12343-955445-5'
@@ -235,4 +260,4 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
   )
 }
 
-export default SidebarAdd
+export default SidebarEdit

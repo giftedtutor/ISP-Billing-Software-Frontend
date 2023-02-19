@@ -9,7 +9,8 @@ import Pagination from "react-js-pagination"
 import { toast } from "react-toastify"
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
-import Sidebar from './AddCustomerModal'
+import SidebarAdd from './AddCustomerModal'
+import SidebarEdit from './EditCustomerModal'
 import Select from 'react-select'
 import { ChevronDown, Share, Printer, FileText, File, Grid, Copy, Slack, User, Settings, Database, Edit2, MoreVertical, Trash2, Archive } from 'react-feather'
 import { selectThemeColors } from '@utils'
@@ -52,11 +53,13 @@ const UsersList = () => {
   const [deleteModal, setDeleteModal] = useState(false)
   const [centeredModal, setCenteredModal] = useState(false)
   const [centeredModal2, setCenteredModal2] = useState(false)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [SidebarAddOpen, setSidebarAddOpen] = useState(false)
+  const [SidebarEditOpen, setSidebarEditOpen] = useState(false)
 
 
-  // ** Function to toggle sidebar
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
+  // ** Function to toggle SidebarAdd
+  const toggleSidebarAdd = () => setSidebarAddOpen(!SidebarAddOpen)
+  const toggleSidebarEdit = () => setSidebarEditOpen(!SidebarEditOpen)
 
   const history = useHistory()
   const [search, setSearch] = useState("")
@@ -72,7 +75,7 @@ const UsersList = () => {
   const [refresh, setRefresh] = useState(false)
   const [deleteID, setDeleteID] = useState()
   const [grade, setGrade] = useState('')
-
+  const [editID, setEditID] = useState()
   const handlePageChange = (pageNumber) => {
     setLoading(true)
     console.log(pageNumber)
@@ -104,7 +107,7 @@ const UsersList = () => {
         setTotal(response.data.totalPages)
         setLoading(false) //stop loading when data is fetched
       }).catch(err => console.log(err))
-  }, [pageNo, record, refresh, grade, sidebarOpen])
+  }, [pageNo, record, refresh, grade, SidebarAddOpen, SidebarEditOpen])
 
   const filterDataOfEachColumn = getData.filter(item => {
     return search !== "" ? item.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -171,6 +174,16 @@ const UsersList = () => {
                     <Trash2 size={14} className='me-50' /> &nbsp;
                     <span className='align-middle'>Delete</span>
                   </DropdownItem>
+                  <DropdownItem
+                    className='w-100'
+                    onClick={() => {
+                      toggleSidebarEdit()
+                      setEditID(data._id)
+                    }}
+                  >
+                    <Edit2 size={14} className='me-50' /> &nbsp;
+                    <span className='align-middle'>Edit</span>
+                  </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
             </div>
@@ -180,22 +193,22 @@ const UsersList = () => {
     )
   })
 
-  const gradeOptions = [
-    { value: '', label: 'All Customers' },
-    { value: '1st', label: '1st' },
-    { value: '2nd', label: '2nd' },
-    { value: '3rd', label: '3rd' },
-    { value: '4th', label: '4th' },
-    { value: '5th', label: '5th' },
-    { value: '6th', label: '6th' },
-    { value: '7th', label: '7th' },
-    { value: '8th', label: '8th' },
-    { value: '9th', label: '9th' },
-    { value: '10th', label: '10th' },
-    { value: '11th', label: '11th' },
-    { value: '12th', label: '12th' }
+  // const gradeOptions = [
+  //   { value: '', label: 'All Customers' },
+  //   { value: '1st', label: '1st' },
+  //   { value: '2nd', label: '2nd' },
+  //   { value: '3rd', label: '3rd' },
+  //   { value: '4th', label: '4th' },
+  //   { value: '5th', label: '5th' },
+  //   { value: '6th', label: '6th' },
+  //   { value: '7th', label: '7th' },
+  //   { value: '8th', label: '8th' },
+  //   { value: '9th', label: '9th' },
+  //   { value: '10th', label: '10th' },
+  //   { value: '11th', label: '11th' },
+  //   { value: '12th', label: '12th' }
 
-  ]
+  // ]
 
   return (
     <Fragment>
@@ -288,7 +301,7 @@ const UsersList = () => {
               <Row>
                 <Col md='3'>
                   {/* <Label for='role-select'>Class</Label> */}
-                  <Select
+                  {/* <Select
                     isClearable={true}
                     value={grade}
                     options={gradeOptions}
@@ -298,10 +311,7 @@ const UsersList = () => {
                     onChange={data => {
                       setGrade(data)
                     }}
-                  />
-                </Col>
-                <Col className='my-md-0 my-1' md='3' ></Col>
-                <Col className='my-md-0 my-1' md='3' >
+                  /> */}
                   <div className='d-flex align-items-center mb-sm-0 mb-1 me-1'>
                     <Input
                       id='search-invoice'
@@ -312,6 +322,10 @@ const UsersList = () => {
                       onChange={e => setSearch(e.target.value)}
                     />
                   </div>
+                </Col>
+                <Col className='my-md-0 my-1' md='3' ></Col>
+                <Col className='my-md-0 my-1' md='3' >
+                  
                 </Col>
                 <Col className='my-md-0 my-1' md='3' >
                   <div className='d-flex align-items-center table-header-actions'>
@@ -335,7 +349,7 @@ const UsersList = () => {
                     </UncontrolledDropdown> &nbsp; &nbsp;
                     <Button className='add-new-user mr-1' color='primary'
                       onClick={() => {
-                        toggleSidebar()
+                        toggleSidebarAdd()
                       }}
                     >
                       Add New Customer
@@ -435,7 +449,8 @@ const UsersList = () => {
         </CardBody>
       </Card>
 
-      <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
+      <SidebarAdd open={SidebarAddOpen} toggleSidebarAdd={toggleSidebarAdd} />
+      <SidebarEdit open={SidebarEditOpen} toggleSidebarEdit={toggleSidebarEdit} editID={editID}/>
     </Fragment >
   )
 }
