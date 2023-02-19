@@ -1,0 +1,300 @@
+  { one === 1 ? (
+         <tr>
+   <td>
+    
+     {/* value={Category} onChange={(e) => setCategory(e.target.value)} */}
+   <select class="custom-select"  value={Category} onChange={(e) => setCategory(e.target.value)}  required>
+   {getCategory.map((cat, index) => (
+     <option key={index} value={cat.name}>{cat.name}</option>
+     ))}
+     </select>
+   </td>
+
+   <td>
+     {/* value={Category} onChange={(e) => setSubCategory(e.target.value)} */}
+     <select class="custom-select" value={SubCategory} onChange={(e) => setSubCategory(e.target.value)} required>
+   {getSubCategory.map((cat, index) => (
+     <option key={index} value={cat.name}>{cat.name}</option>
+     ))}
+     </select>
+   </td>
+
+   <td>
+   {/* value={Item} onChange={(e) => setItem(e.target.value)} */}
+   <select class="custom-select" value={Item} onChange={(e) => setItem(e.target.value)}  required>
+   {getItem.map((cat, index) => (
+     <option key={index} value={cat.name}>{cat.name}</option>
+     ))}
+     </select>
+   </td>
+
+   <td>
+     {/* onChange={(e) => setUnitPrice(e.target.value)} */}
+ <input type="Integer" className="form-control"  onChange={(e) => setUnitPrice(e.target.value) } value={unitPrice}  placeholder="Unit Price" />
+
+   </td>
+
+   <td>
+     {/* onChange={(e) => setQuantity(e.target.value)}  */}
+     <input type="Integer" className="form-control"  onChange={(e) => setQuantity(e.target.value)} value={quantity}  placeholder="Unit Price" />
+   </td>
+
+   <td>
+   {unitPrice * quantity}
+     {/* {(unitPrice[index] * quantity[index])} */}
+   {/* <input type="Integer" className="form-control" onChange={(e) => setTotalPrice(e.target.value)} disa placeholder="" value={unitPrice * quantity} /> */}
+   </td>
+
+   <td>
+     <input type="Integer" className="form-control"  onChange={(e) => setTax(e.target.value)} value={tax}  placeholder="Tax" />
+   </td>
+
+   <td>
+   {/* <i class="fa fa-times" aria-hidden="true"></i> */}
+   {/* <FontAwesomeIcon icon={ faPlus } color="red" /> */}
+   <Button.Ripple onClick={() => remove(1)} color='danger'>Remove</Button.Ripple>
+   </td>
+  </tr>
+       ) : (
+         ''
+       )}
+        { two === 1 ? (
+         <tr>
+         <td>
+          
+           {/* value={Category} onChange={(e) => setCategory(e.target.value)} */}
+         <select class="custom-select" value={Category2} onChange={(e) => setCategory2(e.target.value)} required>
+         {getCategory.map((cat, index) => (
+           <option key={index} value={cat.name}>{cat.name}</option>
+           ))}
+           </select>
+         </td>
+      
+         <td>
+           {/* value={Category} onChange={(e) => setSubCategory(e.target.value)} */}
+           <select class="custom-select" value={SubCategory2} onChange={(e) => setSubCategory2(e.target.value)} required>
+         {getSubCategory.map((cat, index) => (
+           <option key={index} value={cat.name}>{cat.name}</option>
+           ))}
+           </select>
+         </td>
+      
+         <td>
+         {/* value={Item} onChange={(e) => setItem(e.target.value)} */}
+         <select class="custom-select" value={Item2} onChange={(e) => setItem2(e.target.value)} required>
+         {getItem.map((cat, index) => (
+           <option key={index} value={cat.name}>{cat.name}</option>
+           ))}
+           </select>
+         </td>
+      
+         <td>
+           {/* onChange={(e) => setUnitPrice(e.target.value)} */}
+       <input type="Integer" className="form-control"  onChange={(e) => setUnitPrice2(e.target.value) } value={unitPrice2}  placeholder="Unit Price" />
+      
+         </td>
+      
+         <td>
+           {/* onChange={(e) => setQuantity(e.target.value)}  */}
+           <input type="Integer" className="form-control"  onChange={(e) => setQuantity2(e.target.value)} value={quantity2}  placeholder="Unit Price" />
+         </td>
+      
+         <td>
+           {unitPrice2 * quantity2}
+           {/* {(unitPrice[index] * quantity[index])} */}
+         {/* <input type="Integer" className="form-control" onChange={(e) => setTotalPrice(e.target.value)} value={totalPrice} placeholder="Toatl Price" value={totalPrice} /> */}
+         </td>
+         <td>
+          <input type="Integer" className="form-control"  onChange={(e) => setTax2(e.target.value)} value={tax2}  placeholder="Tax" />
+        </td>
+      
+         <td>
+         {/* <i class="fa fa-times" aria-hidden="true"></i> */}
+         {/* <FontAwesomeIcon icon={ faPlus } color="red" /> */}
+         <Button.Ripple onClick={() => remove(2)} color='danger'>Remove</Button.Ripple>
+         </td>
+        </tr>
+       ) : (
+          ''
+       )}
+         { three === 1 ? (
+             <tr>
+             <td>
+              
+               {/* value={Category} onChange={(e) => setCategory(e.target.value)} */}
+             <select class="custom-select"  value={Category3} onChange={(e) => setCategory3(e.target.value)} required>
+             {getCategory.map((cat, index) => (
+               <option key={index} value={cat.name}>{cat.name}</option>
+               ))}
+               </select>
+             </td>
+          
+             <td>
+               {/* value={Category} onChange={(e) => setSubCategory(e.target.value)} */}
+               <select class="custom-select"  value={SubCategory3} onChange={(e) => setSubCategory3(e.target.value)}  required>
+             {getSubCategory.map((cat, index) => (
+               <option key={index} value={cat.name}>{cat.name}</option>
+               ))}
+               </select>
+             </td>
+          
+             <td>
+             {/* value={Item} onChange={(e) => setItem(e.target.value)} */}
+             <select class="custom-select"  value={Item3} onChange={(e) => setItem3(e.target.value)} required>
+             {getItem.map((cat, index) => (
+               <option key={index} value={cat.name}>{cat.name}</option>
+               ))}
+               </select>
+             </td>
+          
+             <td>
+               {/* onChange={(e) => setUnitPrice(e.target.value)} */}
+           <input type="Integer" className="form-control"  onChange={(e) => setUnitPrice3(e.target.value) } value={unitPrice3}  placeholder="Unit Price" />
+          
+             </td>
+          
+             <td>
+               {/* onChange={(e) => setQuantity(e.target.value)}  */}
+               <input type="Integer" className="form-control"  onChange={(e) => setQuantity3(e.target.value)} value={quantity3}  placeholder="Unit Price" />
+             </td>
+          
+             <td>
+               {unitPrice3 * quantity3}
+               {/* {(unitPrice[index] * quantity[index])} */}
+             {/* <input type="Integer" className="form-control" onChange={(e) => setTotalPrice(e.target.value)} value={totalPrice} placeholder="Toatl Price" value={totalPrice} /> */}
+             </td>
+
+             <td>
+              <input type="Integer" className="form-control"  onChange={(e) => setTax3(e.target.value)} value={tax3}  placeholder="Tax" />
+            </td>
+          
+             <td>
+             {/* <i class="fa fa-times" aria-hidden="true"></i> */}
+             {/* <FontAwesomeIcon icon={ faPlus } color="red" /> */}
+             <Button.Ripple onClick={() => remove(3)} color='danger'>Remove</Button.Ripple>
+             </td>
+            </tr>
+       ) : (
+          ''
+       )}
+
+        { four === 1 ? (
+             <tr>
+             <td>
+              
+               {/* value={Category} onChange={(e) => setCategory(e.target.value)} */}
+             <select class="custom-select"  value={Category4} onChange={(e) => setCategory4(e.target.value)} required>
+             {getCategory.map((cat, index) => (
+               <option key={index} value={cat.name}>{cat.name}</option>
+               ))}
+               </select>
+             </td>
+          
+             <td>
+               {/* value={Category} onChange={(e) => setSubCategory(e.target.value)} */}
+               <select class="custom-select"  value={SubCategory4} onChange={(e) => setSubCategory4(e.target.value)}  required>
+             {getSubCategory.map((cat, index) => (
+               <option key={index} value={cat.name}>{cat.name}</option>
+               ))}
+               </select>
+             </td>
+          
+             <td>
+             {/* value={Item} onChange={(e) => setItem(e.target.value)} */}
+             <select class="custom-select"  value={Item4} onChange={(e) => setItem4(e.target.value)} required>
+             {getItem.map((cat, index) => (
+               <option key={index} value={cat.name}>{cat.name}</option>
+               ))}
+               </select>
+             </td>
+          
+             <td>
+               {/* onChange={(e) => setUnitPrice(e.target.value)} */}
+           <input type="Integer" className="form-control"  onChange={(e) => setUnitPrice4(e.target.value) } value={unitPrice4}  placeholder="Unit Price" />
+          
+             </td>
+          
+             <td>
+               {/* onChange={(e) => setQuantity(e.target.value)}  */}
+               <input type="Integer" className="form-control"  onChange={(e) => setQuantity4(e.target.value)} value={quantity4}  placeholder="Unit Price" />
+             </td>
+          
+             <td>
+               {unitPrice4 * quantity4}
+               {/* {(unitPrice[index] * quantity[index])} */}
+             {/* <input type="Integer" className="form-control" onChange={(e) => setTotalPrice(e.target.value)} value={totalPrice} placeholder="Toatl Price" value={totalPrice} /> */}
+             </td>
+          
+             <td>
+              <input type="Integer" className="form-control"  onChange={(e) => setTax4(e.target.value)} value={tax4}  placeholder="Tax" />
+            </td>
+             <td>
+             {/* <i class="fa fa-times" aria-hidden="true"></i> */}
+             {/* <FontAwesomeIcon icon={ faPlus } color="red" /> */}
+             <Button.Ripple onClick={() => remove(4)} color='danger'>Remove</Button.Ripple>
+             </td>
+            </tr>
+       ) : (
+          ''
+       )}
+
+           { five === 1 ? (
+             <tr>
+             <td>
+              
+               {/* value={Category} onChange={(e) => setCategory(e.target.value)} */}
+             <select class="custom-select"  value={Category5} onChange={(e) => setCategory5(e.target.value)} required>
+             {getCategory.map((cat, index) => (
+               <option key={index} value={cat.name}>{cat.name}</option>
+               ))}
+               </select>
+             </td>
+          
+             <td>
+               {/* value={Category} onChange={(e) => setSubCategory(e.target.value)} */}
+               <select class="custom-select"  value={SubCategory5} onChange={(e) => setSubCategory5(e.target.value)}  required>
+             {getSubCategory.map((cat, index) => (
+               <option key={index} value={cat.name}>{cat.name}</option>
+               ))}
+               </select>
+             </td>
+          
+             <td>
+             {/* value={Item} onChange={(e) => setItem(e.target.value)} */}
+             <select class="custom-select"  value={Item5} onChange={(e) => setItem5(e.target.value)} required>
+             {getItem.map((cat, index) => (
+               <option key={index} value={cat.name}>{cat.name}</option>
+               ))}
+               </select>
+             </td>
+          
+             <td>
+               {/* onChange={(e) => setUnitPrice(e.target.value)} */}
+           <input type="Integer" className="form-control"  onChange={(e) => setUnitPrice5(e.target.value) } value={unitPrice5}  placeholder="Unit Price" />
+          
+             </td>
+          
+             <td>
+               {/* onChange={(e) => setQuantity(e.target.value)}  */}
+               <input type="Integer" className="form-control"  onChange={(e) => setQuantity5(e.target.value)} value={quantity5}  placeholder="Unit Price" />
+             </td>
+          
+             <td>
+               {unitPrice5 * quantity5}
+               {/* {(unitPrice[index] * quantity[index])} */}
+             {/* <input type="Integer" className="form-control" onChange={(e) => setTotalPrice(e.target.value)} value={totalPrice} placeholder="Toatl Price" value={totalPrice} /> */}
+             </td>
+
+             <td>
+              <input type="Integer" className="form-control"  onChange={(e) => setTax5(e.target.value)} value={tax5}  placeholder="Tax" />
+            </td>
+          
+             <td>
+             {/* <i class="fa fa-times" aria-hidden="true"></i> */}
+             {/* <FontAwesomeIcon icon={ faPlus } color="red" /> */}
+             <Button.Ripple onClick={() => remove(5)} color='danger'>Remove</Button.Ripple>
+             </td>
+            </tr>
+       ) : (
+          ''
+       )}
