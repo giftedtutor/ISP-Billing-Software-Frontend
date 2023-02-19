@@ -30,5 +30,12 @@ export default [
     icon: <Box size={20} />,
     navLink: '/ISPBS/apps/device/list'
 
+  },
+  {
+    id: 'expense',
+    title: 'Expense',
+    icon: <DollarSign size={20} />,
+    navLink: '/ISPBS/apps/expense/list'
+
   }
 ]
