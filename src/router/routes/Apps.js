@@ -152,6 +152,10 @@ const AppRoutes = [
     component: lazy(() => import('../../views/apps/package/list'))
   },
   {
+    path: '/ISPBS/apps/device/list',
+    component: lazy(() => import('../../views/apps/device/list'))
+  },
+  {
     path: '/ISPBS/apps/user/edit',
     component: lazy(() => import('../../views/apps/user/edit'))
   },

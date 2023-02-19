@@ -10,7 +10,7 @@ export default [
 
   {
     id: 'customer',
-    title: 'Customers',
+    title: 'Customer',
     icon: <Users size={20} />,
     navLink: '/ISPBS/apps/customers/list'
 
@@ -18,9 +18,17 @@ export default [
   
   {
     id: 'package',
-    title: 'Packages',
+    title: 'Package',
     icon: <Package size={20} />,
     navLink: '/ISPBS/apps/package/list'
+
+  },
+   
+  {
+    id: 'device',
+    title: 'Device',
+    icon: <Box size={20} />,
+    navLink: '/ISPBS/apps/device/list'
 
   }
 ]

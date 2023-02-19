@@ -9,8 +9,8 @@ import Pagination from "react-js-pagination"
 import { toast } from "react-toastify"
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
-import SidebarAdd from './AddPackageModal'
-import SidebarEdit from './EditPackageModal'
+import SidebarAdd from './AddDeviceModal'
+import SidebarEdit from './EditDeviceModal'
 import { ChevronDown, Share, Printer, FileText, File, Grid, Copy, Slack, User, Settings, Database, Edit2, MoreVertical, Trash2, Archive } from 'react-feather'
 
 // ** Reactstrap Imports
@@ -38,7 +38,6 @@ import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import axios from "axios"
 import generatePDF from "./TablePDF.js"
-import moment from "moment"
 
 const override = {
   display: "block",
@@ -49,8 +48,6 @@ const override = {
 
 const UsersList = () => {
   const [deleteModal, setDeleteModal] = useState(false)
-  const [centeredModal, setCenteredModal] = useState(false)
-  const [centeredModal2, setCenteredModal2] = useState(false)
   const [SidebarAddOpen, setSidebarAddOpen] = useState(false)
   const [SidebarEditOpen, setSidebarEditOpen] = useState(false)
 
@@ -78,8 +75,8 @@ const UsersList = () => {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  const deletePackage = () => {
-    axios.delete(`${baseURL}/packages/deletePackage?package_id=${deleteID}`)
+  const deleteDevice = () => {
+    axios.delete(`${baseURL}/devices/deleteDevice?device_id=${deleteID}`)
       .then(response => {
         toast(response.data.message)
         setRefresh(true)
@@ -90,9 +87,9 @@ const UsersList = () => {
 
   useEffect(() => {
     setLoading(true)
-    axios.get(`${baseURL}/packages/getPackages?user_id=${Cookies.get("id")}&&pageNo=${pageNo}&&records=${record}`)
+    axios.get(`${baseURL}/devices/getDevices?user_id=${Cookies.get("id")}&&pageNo=${pageNo}&&records=${record}`)
       .then(response => {
-        console.log("Get Packages Data", response)
+        console.log("Get Devices Data", response)
         setGetData(response.data.data)
         if (response.data.data.length === 0) {
           toast('No Data in this Table!')
@@ -104,22 +101,18 @@ const UsersList = () => {
 
   const filterDataOfEachColumn = getData.filter(item => {
     return search !== "" ? item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.package_type.toLowerCase().includes(search.toLowerCase()) ||
-      item.price.toString().includes(search.toString()) ||
-      item.detail.toLowerCase().includes(search.toLowerCase()) ||
-      item.status.toLowerCase().includes(search.toLowerCase()) : item
+      item.mac_address.toLowerCase().includes(search.toLowerCase()) ||
+      item.price.toString().includes(search.toString()) : item
   })
   const TableData = filterDataOfEachColumn.map((data, index) => {
     return (
       <tr>
         <th scope="row">{index + 1}</th>
         <th scope="row">{data.name}</th>
-        <td>{data.package_type}</td>
+        <td>{data.mac_address}</td>
         <td>{data.price}</td>
-        <td>{data.detail}</td>
-        <td>{data.status}</td>
         <td>
-          <div
+          <div 
             className="btn-group"
             role="group"
             aria-label="Basic outlined example"
@@ -176,7 +169,7 @@ const UsersList = () => {
                 <Modal isOpen={deleteModal} toggle={() => setDeleteModal(!deleteModal)} className='modal-dialog-centered'>
                   <ModalHeader toggle={() => setDeleteModal(!deleteModal)}>Deletion Confirmation!</ModalHeader>
                   <ModalBody>
-                    Are you sure, you want to delete the selected Package?
+                    Are you sure, you want to delete the selected Device?
                     <br />
                     This cannot be undone!
                   </ModalBody>
@@ -188,7 +181,7 @@ const UsersList = () => {
                     </Button.Ripple>
                     <Button.Ripple color='success' outline onClick={() => {
 
-                      deletePackage()
+                      deleteDevice()
                       setDeleteModal(!deleteModal)
                     }}>
                       Yes
@@ -242,7 +235,7 @@ const UsersList = () => {
                         toggleSidebarAdd()
                       }}
                     >
-                      Add New Package
+                      Add New Device
                     </Button>
                   </div>
                 </Col>
@@ -276,10 +269,8 @@ const UsersList = () => {
                       <tr>
                         <th scope="col">Sr. No</th>
                         <th scope="col">Name</th>
-                        <th scope="col">Type</th>
+                        <th scope="col">MAC Address</th>
                         <th scope="col">Price</th>
-                        <th scope="col">Detail</th>
-                        <th scope="col">Status</th>
                         <th scope="col">Actions</th>
                       </tr>
                     </thead>
