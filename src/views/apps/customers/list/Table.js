@@ -75,7 +75,7 @@ const UsersList = () => {
   const [refresh, setRefresh] = useState(false)
   const [deleteID, setDeleteID] = useState()
   const [grade, setGrade] = useState('')
-  const [editID, setEditID] = useState()
+  const [editID, setEditID] = useState(0)
   const handlePageChange = (pageNumber) => {
     setLoading(true)
     setPageNo(pageNumber)
@@ -449,7 +449,7 @@ const UsersList = () => {
       </Card>
 
       <SidebarAdd open={SidebarAddOpen} toggleSidebarAdd={toggleSidebarAdd} />
-      <SidebarEdit open={SidebarEditOpen} toggleSidebarEdit={toggleSidebarEdit} editID={editID}/>
+      <SidebarEdit open={SidebarEditOpen} toggleSidebarEdit={toggleSidebarEdit} editID={editID} setEditID={setEditID}/>
     </Fragment >
   )
 }

@@ -34,7 +34,6 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
       }
     })
       .then(res => {
-        console.log("Image Res::::", res.data)
         if (res.data.messsage === "Files Uploaded") {
           if (type === 1) {
             setCnicFrontPic(res.data.data[0]?.img)
@@ -48,7 +47,6 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
         }
       })
       .catch(err => {
-        console.log("Error", err)
       })
   }
 
@@ -86,16 +84,14 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
           setpackageID('')
           toast(res.data.messsage)
         } else {
-          console.log("Somthing went Wrong - Error")
+          toast("Somthing went Wrong - Error")
         }
       })
       .catch(err => {
-        console.log("Error", err)
         toast(err)
       })
   }
   const onSubmit = data => {
-    console.log('data', data, packageID)
     submitForm(data, packageID)
   }
 
@@ -178,7 +174,6 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
             innerRef={register({ required: true })}
             invalid={errors.package_id && true}
             onChange={(e) => {
-              console.log('e', e)
               setpackageID(e.value)
             }}
             placeholder='Select Package'

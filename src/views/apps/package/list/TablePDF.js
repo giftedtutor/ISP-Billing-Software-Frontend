@@ -5,7 +5,7 @@ import "jspdf-autotable"
 import moment from "moment"
 // import pakLogo from '../../../../../assets/images/logo/ISPBS_logo.jpg'
 
-const generatePDF = (CustomerData) => {
+const generatePDF = (PackageData) => {
 
     let yPos = 10
     const doc = new jsPDF()
@@ -26,18 +26,18 @@ const generatePDF = (CustomerData) => {
     doc.setFont(undefined, 'normal')
 
     doc.setFontSize(12)
-    const tableColumn = ["Sr. No", "Name", "Father Name", "Email", "CNIC", "Joining Date"]
+    const tableColumn = ["Sr. No", "Name", "Type", "Price", "Detail", "Status"]
 
     const tableRows = []
 
-    CustomerData.forEach((data, index) => {
+    PackageData.forEach((data, index) => {
         const TableData = [
             index + 1,
             data.name,
-            data.father_name,
-            data.email,
-            data.cnic,
-            moment(data.date).format('DD/MM/YYYY')
+            data.package_type,
+            data.price,
+            data.detail,
+            data.status
             //   .toLocaleString(undefined, { maximumFractionDigits: 2 }),
         ]
         tableRows.push(TableData)
@@ -63,7 +63,7 @@ const generatePDF = (CustomerData) => {
 
     const dateStr = date[0] + date[1] + date[2] + date[3] + date[4]
 
-    doc.save(`CustomersList${dateStr}.pdf`)
+    doc.save(`PackagesList${dateStr}.pdf`)
 }
 
 export default generatePDF

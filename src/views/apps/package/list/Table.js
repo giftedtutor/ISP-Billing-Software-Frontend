@@ -9,11 +9,9 @@ import Pagination from "react-js-pagination"
 import { toast } from "react-toastify"
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
-import SidebarAdd from './AddCustomerModal'
-import SidebarEdit from './EditCustomerModal'
-import Select from 'react-select'
+import SidebarAdd from './AddPackageModal'
+import SidebarEdit from './EditPackageModal'
 import { ChevronDown, Share, Printer, FileText, File, Grid, Copy, Slack, User, Settings, Database, Edit2, MoreVertical, Trash2, Archive } from 'react-feather'
-import { selectThemeColors } from '@utils'
 
 // ** Reactstrap Imports
 import {
@@ -68,10 +66,6 @@ const UsersList = () => {
   const [pageNo, setPageNo] = useState(1)
   const [total, setTotal] = useState(10)
   const [record, setRecord] = useState(10)
-  const [cnicFrontPic, setCnicFrontPic] = useState('')
-  const [cnicBackPic, setCnicBackPic] = useState('')
-  const [packageDetail, setPackageDetail] = useState({})
-  const [customerName, setCustomerName] = useState('')
   const [refresh, setRefresh] = useState(false)
   const [deleteID, setDeleteID] = useState()
   const [grade, setGrade] = useState('')
@@ -84,8 +78,8 @@ const UsersList = () => {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  const deleteCustomer = () => {
-    axios.delete(`${baseURL}/customers/deleteCustomer?customer_id=${deleteID}`)
+  const deletePackage = () => {
+    axios.delete(`${baseURL}/packages/deletePackage?package_id=${deleteID}`)
       .then(response => {
         toast(response.data.message)
         setRefresh(true)
@@ -96,9 +90,9 @@ const UsersList = () => {
 
   useEffect(() => {
     setLoading(true)
-    axios.get(`${baseURL}/customers/getCustomers?user_id=${Cookies.get("id")}&&pageNo=${pageNo}&&records=${record}`)
+    axios.get(`${baseURL}/packages/getPackages?user_id=${Cookies.get("id")}&&pageNo=${pageNo}&&records=${record}`)
       .then(response => {
-        console.log("Get Customers Data", response)
+        console.log("Get Packages Data", response)
         setGetData(response.data.data)
         if (response.data.data.length === 0) {
           toast('No Data in this Table!')
@@ -110,42 +104,20 @@ const UsersList = () => {
 
   const filterDataOfEachColumn = getData.filter(item => {
     return search !== "" ? item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.father_name.toLowerCase().includes(search.toLowerCase()) ||
-      item.address.toLowerCase().includes(search.toLowerCase()) ||
-      item.email.toLowerCase().includes(search.toLowerCase()) ||
-      item.date.toLowerCase().includes(search.toLowerCase()) ||
-      item.cnic.toLowerCase().includes(search.toLowerCase()) : item
+      item.package_type.toLowerCase().includes(search.toLowerCase()) ||
+      item.price.toLowerCase().includes(search.toLowerCase()) ||
+      item.detail.toLowerCase().includes(search.toLowerCase()) ||
+      item.status.toLowerCase().includes(search.toLowerCase()) : item
   })
   const TableData = filterDataOfEachColumn.map((data, index) => {
     return (
       <tr>
         <th scope="row">{index + 1}</th>
         <th scope="row">{data.name}</th>
-        <td>{data.father_name}</td>
-        <td>{data.email}</td>
-        <td>{data.cnic}</td>
-        <td>{moment(data.date).format('DD/MM/YYYY')}</td>
-        <td style={{ cursor: 'pointer' }} onClick={() => {
-          setCenteredModal2(!centeredModal2)
-          setPackageDetail(data.package_id)
-        }}>Package Detail</td>
-
-        <td>{<img
-          style={{
-            borderRadius: 50,
-            cursor: 'pointer'
-          }}
-          onClick={() => {
-            setCenteredModal(!centeredModal)
-            setCnicFrontPic(`${baseURL}/files/${data.cnic_front_pictrue}`)
-            setCnicBackPic(`${baseURL}/files/${data.cnic_back_pictrue}`)
-            setCustomerName(`${data.first_name} ${data.last_name}`)
-          }}
-          src={`${baseURL}/files/${data.cnic_front_pictrue}`}
-          alt="Customer Pic"
-          height={40}
-          width={40}
-        />}</td>
+        <td>{data.package_type}</td>
+        <td>{data.price}</td>
+        <td>{data.detail}</td>
+        <td>{data.status}</td>
         <td>
           <div
             className="btn-group"
@@ -192,23 +164,6 @@ const UsersList = () => {
     )
   })
 
-  // const gradeOptions = [
-  //   { value: '', label: 'All Customers' },
-  //   { value: '1st', label: '1st' },
-  //   { value: '2nd', label: '2nd' },
-  //   { value: '3rd', label: '3rd' },
-  //   { value: '4th', label: '4th' },
-  //   { value: '5th', label: '5th' },
-  //   { value: '6th', label: '6th' },
-  //   { value: '7th', label: '7th' },
-  //   { value: '8th', label: '8th' },
-  //   { value: '9th', label: '9th' },
-  //   { value: '10th', label: '10th' },
-  //   { value: '11th', label: '11th' },
-  //   { value: '12th', label: '12th' }
-
-  // ]
-
   return (
     <Fragment>
       <Card className='overflow-hidden'>
@@ -221,7 +176,7 @@ const UsersList = () => {
                 <Modal isOpen={deleteModal} toggle={() => setDeleteModal(!deleteModal)} className='modal-dialog-centered'>
                   <ModalHeader toggle={() => setDeleteModal(!deleteModal)}>Deletion Confirmation!</ModalHeader>
                   <ModalBody>
-                    Are you sure, you want to delete the selected Customer?
+                    Are you sure, you want to delete the selected Package?
                     <br />
                     This cannot be undone!
                   </ModalBody>
@@ -233,7 +188,7 @@ const UsersList = () => {
                     </Button.Ripple>
                     <Button.Ripple color='success' outline onClick={() => {
 
-                      deleteCustomer()
+                      deletePackage()
                       setDeleteModal(!deleteModal)
                     }}>
                       Yes
@@ -241,76 +196,12 @@ const UsersList = () => {
                   </ModalFooter>
                 </Modal>
               </div>
-              {/* View Image MOdal */}
-              <div className='vertically-centered-modal'>
-
-                <Modal isOpen={centeredModal} toggle={() => setCenteredModal(!centeredModal)} className='modal-dialog-centered'>
-                  <ModalHeader toggle={() => setCenteredModal(!centeredModal)}>{`CNIC`}</ModalHeader>
-                  <ModalBody>
-                    <Card>
-                      <CardImg top src={cnicFrontPic} alt={`${customerName} CNIC Front Side Pic`} />
-
-                      <CardBody>
-                        <CardText>
-                          CNIC Front Side
-                        </CardText>
-                      </CardBody>
-                    </Card>
-                    <CardImg top src={cnicBackPic} alt={`${customerName} CNIC Back Side Pic`} />
-                    <CardBody>
-                      <CardText>
-                        CNIC Back Side
-                      </CardText>
-                    </CardBody>
-                  </ModalBody>
-                </Modal>
-              </div>
-
-              {/* View Package MOdal */}
-              <div className='vertically-centered-modal'>
-
-                <Modal isOpen={centeredModal2} toggle={() => setCenteredModal2(!centeredModal2)} className='modal-dialog-centered'>
-                  <ModalHeader toggle={() => setCenteredModal2(!centeredModal2)}>{`Package Detail`}</ModalHeader>
-                  <ModalBody>
-                    <Card>
-                      <CardBody>
-                        <CardText>
-                        Name: {packageDetail?.name}
-                        </CardText>
-                        <CardText>
-                        Type: {packageDetail?.package_type}
-                        </CardText>
-                        <CardText>
-                        Price: {packageDetail?.price}
-                        </CardText>
-                        <CardText>
-                        Detail: {packageDetail?.detail}
-                        </CardText>
-                        <CardText>
-                        Status: {packageDetail?.status}
-                        </CardText>
-                      </CardBody>
-                    </Card>
-                  </ModalBody>
-                </Modal>
-              </div>
+          
             </div>
             <div className="container">
 
               <Row>
                 <Col md='3'>
-                  {/* <Label for='role-select'>Class</Label> */}
-                  {/* <Select
-                    isClearable={true}
-                    value={grade}
-                    options={gradeOptions}
-                    className='react-select'
-                    classNamePrefix='Class Selection'
-                    theme={selectThemeColors}
-                    onChange={data => {
-                      setGrade(data)
-                    }}
-                  /> */}
                   <div className='d-flex align-items-center mb-sm-0 mb-1 me-1'>
                     <Input
                       id='search-invoice'
@@ -351,7 +242,7 @@ const UsersList = () => {
                         toggleSidebarAdd()
                       }}
                     >
-                      Add New Customer
+                      Add New Package
                     </Button>
                   </div>
                 </Col>
@@ -385,12 +276,10 @@ const UsersList = () => {
                       <tr>
                         <th scope="col">Sr. No</th>
                         <th scope="col">Name</th>
-                        <th scope="col">Father Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">CNIC</th>
-                        <th scope="col">Joining Date</th>
-                        <th scope="col">Package</th>
-                        <th scope="col">CNIC Pics</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Detail</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Actions</th>
                       </tr>
                     </thead>
@@ -449,7 +338,7 @@ const UsersList = () => {
       </Card>
 
       <SidebarAdd open={SidebarAddOpen} toggleSidebarAdd={toggleSidebarAdd} />
-      <SidebarEdit open={SidebarEditOpen} toggleSidebarEdit={toggleSidebarEdit} editID={editID}/>
+      <SidebarEdit open={SidebarEditOpen} toggleSidebarEdit={toggleSidebarEdit} editID={editID} setEditID={setEditID}/>
     </Fragment >
   )
 }

@@ -16,8 +16,7 @@ import Cookies from 'js-cookie'
 import baseURL from "../../../../baseURL/baseURL.js"
 import { toast } from 'react-toastify'
 
-const SidebarEdit = ({ open, toggleSidebarEdit, editID }) => {
-  console.log('Edit ID::::', editID)
+const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
   const { register, errors, handleSubmit } = useForm()
   const [packageID, setpackageID] = useState('')
   const [data, setData] = useState(null)
@@ -35,7 +34,6 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID }) => {
       }
     })
       .then(res => {
-        console.log("Image Res::::", res.data)
         if (res.data.messsage === "Files Uploaded") {
           if (type === 1) {
             setCnicFrontPic(res.data.data[0]?.img)
@@ -49,7 +47,6 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID }) => {
         }
       })
       .catch(err => {
-        console.log("Error", err)
       })
   }
 
@@ -72,7 +69,6 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID }) => {
       
     axios.get(`${baseURL}/customers/editCustomer?customer_id=${editID}`)
     .then((response) => {
-      console.log('::::::', response.data)
       setEditData(response.data)
       setCnicBackPic(response.data.cnic_back_pictrue)
       setCnicFrontPic(response.data.cnic_front_pictrue)
@@ -97,23 +93,22 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID }) => {
     }
     axios.put(`${baseURL}/customers/updateCustomer`, DATA)
       .then(res => {
-        console.log('UPDATE::::', res.data)
         if (res.data.status === "ok") {
           toast(res.data.message)
           toggleSidebarEdit()
           setpackageID('')
+          setEditID(0)
+          setEditData({})
         
         } else {
-          console.log("Somthing went Wrong - Error")
+          toast("Somthing went Wrong - Error")
         }
       })
       .catch(err => {
-        console.log("Error", err)
         toast(err)
       })
   }
   const onSubmit = data => {
-    console.log('data', data, packageID)
     submitForm(data, packageID)
   }
 
@@ -202,7 +197,6 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID }) => {
             innerRef={register({ required: true })}
             invalid={errors.package_id && true}
             onChange={(e) => {
-              console.log('e', e)
               setpackageID(e.value)
             }}
             placeholder='Select Package'
