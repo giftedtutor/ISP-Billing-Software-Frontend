@@ -32,6 +32,13 @@ export default [
 
   },
   {
+    id: 'purchase',
+    title: 'Purchase',
+    icon: <FileText size={20} />,
+    navLink: '/ISPBS/apps/purchase/list'
+
+  },
+  {
     id: 'expense',
     title: 'Expense',
     icon: <DollarSign size={20} />,
