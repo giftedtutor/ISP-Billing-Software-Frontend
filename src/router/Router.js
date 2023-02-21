@@ -13,7 +13,7 @@ import Login from '../../src/views/pages/authentication/Login'
 import LayoutWrapper from '@layouts/components/layout-wrapper'
 
 // ** Router Components
-import { BrowserRouter as AppRouter, Route, Switch, Redirect } from 'react-router-dom'
+import { HashRouter as AppRouter, Route, Switch, Redirect } from 'react-router-dom'
 
 // ** Routes & Default Routes
 import { DefaultRoute, Routes, getRoutes } from './routes'
@@ -231,7 +231,7 @@ export default Router
 // import LayoutWrapper from '@layouts/components/layout-wrapper'
 
 // // ** Router Components
-// import { BrowserRouter as AppRouter, Route, Switch, Redirect } from 'react-router-dom'
+// import { HashRouter as AppRouter, Route, Switch, Redirect } from 'react-router-dom'
 
 // // ** Routes & Default Routes
 // import { DefaultRoute, Routes } from './routes'
