@@ -22,9 +22,6 @@ const validate = values => {
   if (!values.name) {
     errors.name = "This field is required!"
   }
-  if (!values.remarks) {
-    errors.remarks = "This field is required!"
-  }
   if (!values.serial_no) {
     errors.serial_no = "This field is required!"
   }
@@ -62,38 +59,11 @@ const validate = values => {
 }
 
 const SidebarAdd = ({ open, toggleSidebarAdd }) => {
-  const { register, errors, handleSubmit } = useForm()
-  const [packageID, setpackageID] = useState('')
+  const [deviceSelectedValue, setDeviceSelectedValue] = useState([])
+  const [packageSelectedValue, setPackageSelectedValue] = useState([])
   const [data, setData] = useState(null)
   const [packageOptions, setPackageOptions] = useState([])
-  const [cnicFrontPic, setCnicFrontPic] = useState('')
-  const [cnicBackPic, setCnicBackPic] = useState('')
-
-  const uploadImageFunction = (File, type) => {
-    const formData = new FormData()
-    formData.append("files", File)
-
-    axios.post(`${baseURL}/generals/uploadImage`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data"
-      }
-    })
-      .then(res => {
-        if (res.data.messsage === "Files Uploaded") {
-          if (type === 1) {
-            setCnicFrontPic(res.data.data[0]?.img)
-          } else if (type === 2) {
-            setCnicBackPic(res.data.data[0]?.img)
-          }
-
-          toast("Image Picked Up!")
-        } else {
-          toast("Somthing went Wrong while Uploading File!")
-        }
-      })
-      .catch(err => {
-      })
-  }
+  const [deviceOptions, setDeviceOptions] = useState([])
 
   useEffect(() => {
 
@@ -107,26 +77,40 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
         setPackageOptions(rec)
       }).catch((err) => console.log(err))
 
-  }, [])
 
+    axios.get(`${baseURL}/devices/getDevicesDropdown`)
+      .then((response) => {
+        const rec = response.data.map(({ _id, name }) => ({
+          id: _id,
+          value: _id,
+          label: name
+        }))
+        setDeviceOptions(rec)
+      }).catch((err) => console.log(err))
+
+  }, [])
   const submitForm = (data) => {
-    axios.post(`${baseURL}/stocks/addStock`, data)
+    console.log('I m IN', data.values)
+    axios.post(`${baseURL}/stocks/addStock`, data.values)
       .then(res => {
         if (res.data.status === "ok") {
           toggleSidebarAdd()
-          setpackageID('')
-          toast(res.data.messsage)
+          // setFieldValue('name', '')
+          // setFieldValue('remarks', '')
+          // setFieldValue('serial_no', '')
+          // setFieldValue('discount', '')
+          // setFieldValue('grand_total', '')
+          // setFieldValue('products', [])
+          
+          toast(res.data.message)
         } else {
           toast("Somthing went Wrong - Error")
         }
       })
       .catch(err => {
-        toast(err)
+        toast(err.message)
       })
   }
-  // const onSubmit = data => {
-  //   submitForm(data, packageID)
-  // }
   const formik = useFormik({
     initialValues: {
       user_id: Cookies.get("id"),
@@ -148,14 +132,29 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
     },
     validate,
     onSubmit: () => {
-      // setTimeout(handleSave, 2000)
-      submitForm(formik.values)
+        submitForm(formik)
     }
   })
-  // const handleSave = () => {
-  //   submitForm(formik.values)
-  // }
 
+ 
+  const removeRow = (i) => {
+    deviceSelectedValue.splice(i, 1)
+    setDeviceSelectedValue(deviceSelectedValue)
+    packageSelectedValue.splice(i, 1)
+    setPackageSelectedValue(packageSelectedValue)
+    formik.setFieldValue('products', [
+      ...formik.values.products.slice(0, i),
+      ...formik.values.products.slice(i + 1)
+    ])
+  }
+
+  useEffect(() => {
+    let grandTotal = 0
+    formik.values.products.forEach((data, index) => {
+      grandTotal += data.total
+    })
+    formik.setFieldValue('grand_total', grandTotal)
+  }, [formik.values.products])
   return (
     <Sidebar
       size='lg'
@@ -239,89 +238,218 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
         {formik.values.products &&
           formik.values.products.map((data, index) => (
             <Row>
-            <Col sm={12} md={4}>
-            <FormGroup>
-              <Label for='unit_price'>Unit Price</Label>
-              <Input
-                id={`products[${index}].unit_price`}
-                name='unit_price'
-                type="text"
-                placeholder='Enter QUantity'
-                onFocus={e => e.target.select()}
+              <Col sm={12} md={3}>
+                <FormGroup>
+                  <Label for='device_id'>Package</Label>
 
-                onChange={(val) => {
-                  formik.setFieldValue(
-                    `products[${index}].unit_price`,
-                    val.target.value
-                  )
-                }}
-                onBlur={formik.handleBlur}
-                value={formik.values.products[index].unit_price}
-                isValid={formik.isValid}
-                isTouched={formik.touched.unit_price}
-                validFeedback="Looks good!"
+                  <Select
+                    isClearable={false}
+                    classNamePrefix='select'
+                    options={deviceOptions}
+                    type="text"
+                    name='device_id'
+                    id='device_id'
+                    placeholder='Select Device'
 
-              />
-              {formik.errors[
-                `products[${index}]unit_price`
-              ] && (
-                  <p
-                    style={{
-                      color: 'red'
-                    }}>
-                    {
-                      formik.errors[
-                      `products[${index}]unit_price`
-                      ]
-                    }
-                  </p>
-                )}
-            </FormGroup>
-            </Col>
-            <Col sm={12} md={4}>
-            <FormGroup>
-              <Label for='quantity'>Quantity</Label>
-              <Input
-                id={`products[${index}].quantity`}
-                name='quantity'
-                type="text"
-                placeholder='Enter QUantity'
-                onFocus={e => e.target.select()}
+                    onChange={(e) => {
+                      formik.setFieldValue(
+                        `products[${index}].device_id`,
+                        e.value
+                      )
+                      deviceSelectedValue[index] = e
+                    }}
+                    onBlur={formik.handleBlur}
+                    value={deviceSelectedValue[index]}
+                    isValid={formik.isValid}
+                    isTouched={formik.touched.device_id}
+                    validFeedback="Looks good!"
 
-                onChange={(val) => {
-                  formik.setFieldValue(
-                    `products[${index}].quantity`,
-                    val.target.value
-                  )
-                }}
-                onBlur={formik.handleBlur}
-                value={formik.values.products[index].quantity}
-                isValid={formik.isValid}
-                isTouched={formik.touched.quantity}
-                validFeedback="Looks good!"
+                  />
+                  {formik.errors[
+                    `products[${index}]device_id`
+                  ] && (
+                      <p
+                        style={{
+                          color: 'red'
+                        }}>
+                        {
+                          formik.errors[
+                          `products[${index}]device_id`
+                          ]
+                        }
+                      </p>
+                    )}
+                </FormGroup>
+              </Col>
+              <Col sm={12} md={3}>
+                <FormGroup>
+                  <Label for='package_id'>Package</Label>
 
-              />
-              {formik.errors[
-                `products[${index}]quantity`
-              ] && (
-                  <p
-                    style={{
-                      color: 'red'
-                    }}>
-                    {
-                      formik.errors[
-                      `products[${index}]quantity`
-                      ]
-                    }
-                  </p>
-                )}
-            </FormGroup>
-            </Col>
+                  <Select
+                    isClearable={false}
+                    classNamePrefix='select'
+                    options={packageOptions}
+                    type="text"
+                    name='package_id'
+                    id='package_id'
+                    placeholder='Select Package'
+                    onFocus={e => e.target.select()}
+
+                    onChange={(e) => {
+                      formik.setFieldValue(
+                        `products[${index}].package_id`,
+                        e.value
+                      )
+                      packageSelectedValue[index] = e
+                    }}
+                    onBlur={formik.handleBlur}
+                    value={packageSelectedValue[index]}
+                    isValid={formik.isValid}
+                    isTouched={formik.touched.package_id}
+                    validFeedback="Looks good!"
+
+                  />
+                  {formik.errors[
+                    `products[${index}]package_id`
+                  ] && (
+                      <p
+                        style={{
+                          color: 'red'
+                        }}>
+                        {
+                          formik.errors[
+                          `products[${index}]package_id`
+                          ]
+                        }
+                      </p>
+                    )}
+                </FormGroup>
+              </Col>
+              <Col sm={12} md={1}>
+                <FormGroup>
+                  <Label for='unit_price'>Unit Price</Label>
+                  <Input
+                    id={`products[${index}].unit_price`}
+                    name='unit_price'
+                    type="Number"
+                    placeholder='Enter Unit Price'
+                    onFocus={e => e.target.select()}
+
+                    onChange={(val) => {
+                      formik.setFieldValue(
+                        `products[${index}].unit_price`,
+                        val.target.value
+                      )
+                      formik.setFieldValue(`products[${index}].total`, (formik.values.products[index].quantity * val.target.value))
+                    }}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.products[index].unit_price}
+                    isValid={formik.isValid}
+                    isTouched={formik.touched.unit_price}
+                    validFeedback="Looks good!"
+
+                  />
+                  {formik.errors[
+                    `products[${index}]unit_price`
+                  ] && (
+                      <p
+                        style={{
+                          color: 'red'
+                        }}>
+                        {
+                          formik.errors[
+                          `products[${index}]unit_price`
+                          ]
+                        }
+                      </p>
+                    )}
+                </FormGroup>
+              </Col>
+              <Col sm={12} md={1}>
+                <FormGroup>
+                  <Label for='quantity'>Quantity</Label>
+                  <Input
+                    id={`products[${index}].quantity`}
+                    name='quantity'
+                    type="Number"
+                    placeholder='Enter QUantity'
+                    onFocus={e => e.target.select()}
+
+                    onChange={(val) => {
+                      formik.setFieldValue(
+                        `products[${index}].quantity`,
+                        val.target.value
+                      )
+                      formik.setFieldValue(`products[${index}].total`, (val.target.value * formik.values.products[index].unit_price))
+                    }}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.products[index].quantity}
+                    isValid={formik.isValid}
+                    isTouched={formik.touched.quantity}
+                    validFeedback="Looks good!"
+
+                  />
+                  {formik.errors[
+                    `products[${index}]quantity`
+                  ] && (
+                      <p
+                        style={{
+                          color: 'red'
+                        }}>
+                        {
+                          formik.errors[
+                          `products[${index}]quantity`
+                          ]
+                        }
+                      </p>
+                    )}
+                </FormGroup>
+              </Col>
+              <Col sm={12} md={2}>
+                <FormGroup>
+                  <Label for='total'>Quantity</Label>
+                  <Input
+                    id={`products[${index}].total`}
+                    name='total'
+                    disabled
+                    type="Number"
+                    value={formik.values.products[index].quantity * formik.values.products[index].unit_price}
+
+                  />
+
+                </FormGroup>
+              </Col>
+              <Col sm={12} md={1}>
+                <Button className="mt-2" color="danger" onClick={() => {
+                  removeRow(index)
+                }}>
+                  Remove
+                </Button>
+              </Col>
             </Row>
           ))}
 
         <hr />
         <Row>
+          <Col sm={12} md={2}>
+            <FormGroup>
+              <Button.Ripple className='mr-1 mt-2' color='warning'
+                onClick={() => {
+                  formik.setFieldValue('products', [
+                    ...formik.values.products,
+                    {
+                      device_id: '',
+                      package_id: '',
+                      unit_price: 0,
+                      quantity: 0,
+                      total: 0
+                    }
+                  ])
+                }}>
+                Add New Product
+              </Button.Ripple>
+            </FormGroup>
+          </Col>
           <Col sm={12} md={4}>
             <FormGroup>
               <Label for='discount'>Discount</Label>
@@ -329,6 +457,11 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
                 id='discount'
                 name='discount'
                 placeholder='Discount'
+                value={formik.values.discount}
+                onChange={(e) => {
+                  formik.setFieldValue('discount', e.target.value)
+                }}
+                
               />
             </FormGroup>
           </Col>
@@ -336,19 +469,37 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
             <FormGroup>
               <Label for='grand_total'>Grand Total</Label>
               <Input
+                disabled
                 id='grand_total'
                 name='grand_total'
                 placeholder='Grand Total'
+                value={formik.values.grand_total - formik.values.discount}
               />
             </FormGroup>
           </Col>
         </Row>
 
         <FormGroup className='d-flex mb-0'>
-          <Button.Ripple className='mr-1' color='primary' type='submit' onClick={formik.handleSubmit}>
+
+          <Button.Ripple className='mr-1 mt-2' color='primary' onClick={formik.handleSubmit}>
             Submit
           </Button.Ripple>
-          <Button.Ripple className='mr-1' outline color='secondary' type='reset'>
+          <Button.Ripple className='mr-1 mt-2' outline color='secondary' onClick={() => {
+            formik.setFieldValue('name', '')
+            formik.setFieldValue('remarks', '')
+            formik.setFieldValue('serial_no', '')
+            formik.setFieldValue('discount', 0)
+            formik.setFieldValue('grand_total', 0)
+            formik.setFieldValue('products', [
+              {
+                device_id: '',
+                package_id: '',
+                unit_price: 0,
+                quantity: 0,
+                total: 0
+              }
+            ])
+          }}>
             Reset
           </Button.Ripple>
         </FormGroup>
