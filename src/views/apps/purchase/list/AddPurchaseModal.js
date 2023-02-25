@@ -10,11 +10,56 @@ import Select from 'react-select'
 import { useForm, Controller } from 'react-hook-form'
 
 // ** Reactstrap Imports
-import { Card, CardHeader, CardTitle, CardBody, Button, Form, FormGroup, Label, Input } from 'reactstrap'
+import { Card, CardHeader, CardTitle, CardBody, Button, Form, FormGroup, Label, Input, Row, Col } from 'reactstrap'
 
 import Cookies from 'js-cookie'
 import baseURL from "../../../../baseURL/baseURL.js"
 import { toast } from 'react-toastify'
+import { useFormik } from 'formik'
+
+const validate = values => {
+  let errors = {}
+  if (!values.name) {
+    errors.name = "This field is required!"
+  }
+  if (!values.remarks) {
+    errors.remarks = "This field is required!"
+  }
+  if (!values.serial_no) {
+    errors.serial_no = "This field is required!"
+  }
+  if (values.products.length === 0) {
+    errors.products = "Please Add atleast One Product!"
+  }
+  values.products.forEach((data, index) => {
+    if (!data.device_id) {
+      errors = {
+        ...errors,
+        [`products[${index}]device_id`]: 'This field is required!'
+      }
+    }
+    if (!data.package_id) {
+      errors = {
+        ...errors,
+        [`products[${index}]package_id`]: 'This field is required!'
+      }
+    }
+    if (!data.unit_price) {
+      errors = {
+        ...errors,
+        [`products[${index}]unit_price`]: 'This field is required!'
+      }
+    }
+    if (!data.quantity) {
+      errors = {
+        ...errors,
+        [`products[${index}]quantity`]: 'This field is required!'
+      }
+    }
+
+  })
+  return errors
+}
 
 const SidebarAdd = ({ open, toggleSidebarAdd }) => {
   const { register, errors, handleSubmit } = useForm()
@@ -63,21 +108,9 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
       }).catch((err) => console.log(err))
 
   }, [])
-  const submitForm = (data, package_id) => {
 
-    const DATA = {
-      user_id: Cookies.get("id"),
-      name: data.name,
-      father_name: data.father_name,
-      package_id,
-      email: data.email,
-      phone_no: data.phone_no,
-      address: data.address,
-      cnic: data.cnic,
-      cnic_front_pictrue: cnicFrontPic,
-      cnic_back_pictrue: cnicBackPic
-    }
-    axios.post(`${baseURL}/customers/addCustomer`, DATA)
+  const submitForm = (data) => {
+    axios.post(`${baseURL}/stocks/addStock`, data)
       .then(res => {
         if (res.data.status === "ok") {
           toggleSidebarAdd()
@@ -91,134 +124,228 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
         toast(err)
       })
   }
-  const onSubmit = data => {
-    submitForm(data, packageID)
-  }
+  // const onSubmit = data => {
+  //   submitForm(data, packageID)
+  // }
+  const formik = useFormik({
+    initialValues: {
+      user_id: Cookies.get("id"),
+      name: '',
+      remarks: '',
+      serial_no: '',
+      discount: 0,
+      grand_total: 0,
+      status: "PURCHASE",
+      products: [
+        {
+          device_id: '',
+          package_id: '',
+          unit_price: 0,
+          quantity: 0,
+          total: 0
+        }
+      ]
+    },
+    validate,
+    onSubmit: () => {
+      // setTimeout(handleSave, 2000)
+      submitForm(formik.values)
+    }
+  })
+  // const handleSave = () => {
+  //   submitForm(formik.values)
+  // }
 
-  const handleSidebarClosed = () => {
-
-  }
   return (
     <Sidebar
       size='lg'
       open={open}
-      title='Add New Customer'
+      title='Purchase Order'
       headerClassName='mb-1'
       contentClassName='pt-0'
       toggleSidebar={toggleSidebarAdd}
-      onClosed={handleSidebarClosed}
+      onClosed={() => console.log('Closed')}
+      style={{ width: "80%" }}
     >
 
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <FormGroup>
-          <Label for='name'>Customer Name</Label>
-          <Input
-            id='name'
-            name='name'
-            innerRef={register({ required: true })}
-            invalid={errors.name && true}
-            placeholder='Customer Name'
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for='father_name'>Father Name</Label>
-          <Input
-            id='father_name'
-            name='father_name'
-            innerRef={register({ required: true })}
-            invalid={errors.father_name && true}
-            placeholder='Father Name'
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for='email'>Email</Label>
-          <Input
-            id='email'
-            name='email'
-            type="email"
-            placeholder='example@gmail.com'
-            innerRef={register({ required: true })}
-            invalid={errors.email && true}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for='phone_no'>Phone No</Label>
-          <Input
-            id='phone_no'
-            name='phone_no'
-            innerRef={register({ required: true })}
-            invalid={errors.phone_no && true}
-            placeholder='Phone No'
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for='address'>Address</Label>
-          <Input
-            id='address'
-            name='address'
-            innerRef={register({ required: true })}
-            invalid={errors.address && true}
-            placeholder='Address'
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for='package_id'>Package</Label>
+      <Form>
+        <Row>
+          <Col sm={12} md={4}>
+            <FormGroup >
+              <Label for='name'>Name</Label>
+              <Input
+                id='name'
+                name='name'
+                placeholder='Give a Name'
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.name}
+                isValid={formik.isValid}
+                isTouched={formik.touched.name}
+                invalidFeedback={formik.errors.name}
+                validFeedback="Looks good!"
+              />
+              {formik.errors.name && (
+                <p
+                  style={{
+                    color: "red"
+                  }}
+                >
+                  {formik.errors.name}
+                </p>
+              )}
+            </FormGroup>
 
-          <Select
-            isClearable={false}
-            classNamePrefix='select'
-            options={packageOptions}
-            type="text"
-            name='package_id'
-            id='package_id'
-            innerRef={register({ required: true })}
-            invalid={errors.package_id && true}
-            onChange={(e) => {
-              setpackageID(e.value)
-            }}
-            placeholder='Select Package'
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for='cnic'>CNIC</Label>
-          <Input
-            id='cnic'
-            name='cnic'
-            innerRef={register({ required: true })}
-            invalid={errors.cnic && true}
-            placeholder='12343-955445-5'
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for='image'>CNIC Front Picture</Label>
-          <Input
-            id='cnic_front_pictrue'
-            name='cnic_front_pictrue'
-            type="file"
-            className="form-control"
-            onChange={(e) => {
-              uploadImageFunction(e.target.files[0], 1)
-            }}
-            innerRef={register({ required: true })}
-            invalid={errors.cnic_front_pictrue && true}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for='image'>CNIC Back Picture</Label>
-          <Input
-            id='cnic_back_pictrue'
-            name='cnic_back_pictrue'
-            type="file"
-            className="form-control"
-            onChange={(e) => {
-              uploadImageFunction(e.target.files[0], 2)
-            }}
-            innerRef={register({ required: true })}
-            invalid={errors.cnic_back_pictrue && true}
-          />
-        </FormGroup>
+          </Col>
+          <Col sm={12} md={4}>
+            <FormGroup>
+              <Label for='remarks'>Remarks</Label>
+              <Input
+                id='remarks'
+                name='remarks'
+                placeholder='Remarks'
+              />
+            </FormGroup>
+          </Col>
+          <Col sm={12} md={4}>
+            <FormGroup>
+              <Label for='serial_no'>Serial No</Label>
+              <Input
+                id='serial_no'
+                name='serial_no'
+                type="text"
+                placeholder='PURCHASE-005'
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.serial_no}
+                isValid={formik.isValid}
+                isTouched={formik.touched.serial_no}
+                invalidFeedback={formik.errors.serial_no}
+                validFeedback="Looks good!"
+              />
+              {formik.errors.serial_no && (
+                <p
+                  style={{
+                    color: "red"
+                  }}
+                >
+                  {formik.errors.serial_no}
+                </p>
+              )}
+            </FormGroup>
+          </Col>
+        </Row>
+        <hr />
+        {formik.values.products &&
+          formik.values.products.map((data, index) => (
+            <Row>
+            <Col sm={12} md={4}>
+            <FormGroup>
+              <Label for='unit_price'>Unit Price</Label>
+              <Input
+                id={`products[${index}].unit_price`}
+                name='unit_price'
+                type="text"
+                placeholder='Enter QUantity'
+                onFocus={e => e.target.select()}
+
+                onChange={(val) => {
+                  formik.setFieldValue(
+                    `products[${index}].unit_price`,
+                    val.target.value
+                  )
+                }}
+                onBlur={formik.handleBlur}
+                value={formik.values.products[index].unit_price}
+                isValid={formik.isValid}
+                isTouched={formik.touched.unit_price}
+                validFeedback="Looks good!"
+
+              />
+              {formik.errors[
+                `products[${index}]unit_price`
+              ] && (
+                  <p
+                    style={{
+                      color: 'red'
+                    }}>
+                    {
+                      formik.errors[
+                      `products[${index}]unit_price`
+                      ]
+                    }
+                  </p>
+                )}
+            </FormGroup>
+            </Col>
+            <Col sm={12} md={4}>
+            <FormGroup>
+              <Label for='quantity'>Quantity</Label>
+              <Input
+                id={`products[${index}].quantity`}
+                name='quantity'
+                type="text"
+                placeholder='Enter QUantity'
+                onFocus={e => e.target.select()}
+
+                onChange={(val) => {
+                  formik.setFieldValue(
+                    `products[${index}].quantity`,
+                    val.target.value
+                  )
+                }}
+                onBlur={formik.handleBlur}
+                value={formik.values.products[index].quantity}
+                isValid={formik.isValid}
+                isTouched={formik.touched.quantity}
+                validFeedback="Looks good!"
+
+              />
+              {formik.errors[
+                `products[${index}]quantity`
+              ] && (
+                  <p
+                    style={{
+                      color: 'red'
+                    }}>
+                    {
+                      formik.errors[
+                      `products[${index}]quantity`
+                      ]
+                    }
+                  </p>
+                )}
+            </FormGroup>
+            </Col>
+            </Row>
+          ))}
+
+        <hr />
+        <Row>
+          <Col sm={12} md={4}>
+            <FormGroup>
+              <Label for='discount'>Discount</Label>
+              <Input
+                id='discount'
+                name='discount'
+                placeholder='Discount'
+              />
+            </FormGroup>
+          </Col>
+          <Col sm={12} md={4}>
+            <FormGroup>
+              <Label for='grand_total'>Grand Total</Label>
+              <Input
+                id='grand_total'
+                name='grand_total'
+                placeholder='Grand Total'
+              />
+            </FormGroup>
+          </Col>
+        </Row>
+
         <FormGroup className='d-flex mb-0'>
-          <Button.Ripple className='mr-1' color='primary' type='submit'>
+          <Button.Ripple className='mr-1' color='primary' type='submit' onClick={formik.handleSubmit}>
             Submit
           </Button.Ripple>
           <Button.Ripple className='mr-1' outline color='secondary' type='reset'>
