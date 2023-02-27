@@ -113,7 +113,8 @@ const UsersList = () => {
       item.serial_no.toLowerCase().includes(search.toLowerCase()) ||
       item.remarks.toLowerCase().includes(search.toLowerCase()) ||
       item.discount.toString().includes(search.toString()) ||
-      item.grand_total.toString().includes(search.toString()) ||
+      item.total.toString().includes(search.toString()) ||
+      item.total_after_discount.toString().includes(search.toString()) ||
       item.date.toLowerCase().includes(search.toLowerCase()) : item
   })
   const TableData = filterDataOfEachColumn.map((data, index) => {
@@ -123,8 +124,9 @@ const UsersList = () => {
         <th scope="row">{data.serial_no}</th>
         <td>{data.name}</td>
         <td>{data.remarks}</td>
+        <td>{data.total}</td>
         <td>{data.discount}</td>
-        <td>{data.grand_total}</td>
+        <td>{data.total_after_discount}</td>
         <td>{moment(data.date).format('DD/MM/YYYY')}</td>
 
         <td>
@@ -392,8 +394,10 @@ const UsersList = () => {
                         <th scope="col">Purchase No</th>
                         <th scope="col">Name</th>
                         <th scope="col">Remarks</th>
+                      
+                        <th scope="col">Total</th>
                         <th scope="col">Discount</th>
-                        <th scope="col">Grand Total</th>
+                        <th scope="col">Total After Discount</th>
                         <th scope="col">Purchase Date</th>
                         <th scope="col">Actions</th>
                       </tr>

@@ -10,7 +10,7 @@ import Select from 'react-select'
 import { useForm, Controller } from 'react-hook-form'
 
 // ** Reactstrap Imports
-import { Card, CardHeader, CardTitle, CardBody, Button, Form, FormGroup, Label, Input, Row, Col } from 'reactstrap'
+import { Card, CardHeader, CardTitle, CardBody, Button, Form, FormGroup, Label, Input, Row, Col, CustomInput } from 'reactstrap'
 
 import Cookies from 'js-cookie'
 import baseURL from "../../../../baseURL/baseURL.js"
@@ -29,18 +29,18 @@ const validate = values => {
     errors.products = "Please Add atleast One Product!"
   }
   values.products.forEach((data, index) => {
-    if (!data.device_id) {
-      errors = {
-        ...errors,
-        [`products[${index}]device_id`]: 'This field is required!'
-      }
-    }
-    if (!data.package_id) {
-      errors = {
-        ...errors,
-        [`products[${index}]package_id`]: 'This field is required!'
-      }
-    }
+    // if (!data.device_id) {
+    //   errors = {
+    //     ...errors,
+    //     [`products[${index}]device_id`]: 'This field is required!'
+    //   }
+    // }
+    // if (!data.package_id) {
+    //   errors = {
+    //     ...errors,
+    //     [`products[${index}]package_id`]: 'This field is required!'
+    //   }
+    // }
     if (!data.unit_price) {
       errors = {
         ...errors,
@@ -61,9 +61,9 @@ const validate = values => {
 const SidebarAdd = ({ open, toggleSidebarAdd }) => {
   const [deviceSelectedValue, setDeviceSelectedValue] = useState([])
   const [packageSelectedValue, setPackageSelectedValue] = useState([])
-  const [data, setData] = useState(null)
   const [packageOptions, setPackageOptions] = useState([])
   const [deviceOptions, setDeviceOptions] = useState([])
+  const [isDevice, setIsdevice] = useState(true)
 
   useEffect(() => {
 
@@ -99,9 +99,9 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
           // setFieldValue('remarks', '')
           // setFieldValue('serial_no', '')
           // setFieldValue('discount', '')
-          // setFieldValue('grand_total', '')
+          // setFieldValue('total', '')
           // setFieldValue('products', [])
-          
+
           toast(res.data.message)
         } else {
           toast("Somthing went Wrong - Error")
@@ -118,25 +118,17 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
       remarks: '',
       serial_no: '',
       discount: 0,
-      grand_total: 0,
+      total: 0,
       status: "PURCHASE",
-      products: [
-        {
-          device_id: '',
-          package_id: '',
-          unit_price: 0,
-          quantity: 0,
-          total: 0
-        }
-      ]
+      products: []
     },
     validate,
     onSubmit: () => {
-        submitForm(formik)
+      submitForm(formik)
     }
   })
 
- 
+
   const removeRow = (i) => {
     deviceSelectedValue.splice(i, 1)
     setDeviceSelectedValue(deviceSelectedValue)
@@ -153,8 +145,10 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
     formik.values.products.forEach((data, index) => {
       grandTotal += data.total
     })
-    formik.setFieldValue('grand_total', grandTotal)
-  }, [formik.values.products])
+    formik.setFieldValue('total', grandTotal)
+    formik.setFieldValue('total_after_discount', grandTotal - formik.values.discount)
+  }, [formik.values.products, formik.values.discount])
+
   return (
     <Sidebar
       size='lg'
@@ -169,44 +163,7 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
 
       <Form>
         <Row>
-          <Col sm={12} md={4}>
-            <FormGroup >
-              <Label for='name'>Name</Label>
-              <Input
-                id='name'
-                name='name'
-                placeholder='Give a Name'
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.name}
-                isValid={formik.isValid}
-                isTouched={formik.touched.name}
-                invalidFeedback={formik.errors.name}
-                validFeedback="Looks good!"
-              />
-              {formik.errors.name && (
-                <p
-                  style={{
-                    color: "red"
-                  }}
-                >
-                  {formik.errors.name}
-                </p>
-              )}
-            </FormGroup>
-
-          </Col>
-          <Col sm={12} md={4}>
-            <FormGroup>
-              <Label for='remarks'>Remarks</Label>
-              <Input
-                id='remarks'
-                name='remarks'
-                placeholder='Remarks'
-              />
-            </FormGroup>
-          </Col>
-          <Col sm={12} md={4}>
+          <Col sm={12} md={3}>
             <FormGroup>
               <Label for='serial_no'>Serial No</Label>
               <Input
@@ -233,14 +190,80 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
               )}
             </FormGroup>
           </Col>
+          <Col sm={12} md={3}>
+            <FormGroup >
+              <Label for='name'>Name</Label>
+              <Input
+                id='name'
+                name='name'
+                placeholder='Give a Name'
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.name}
+                isValid={formik.isValid}
+                isTouched={formik.touched.name}
+                invalidFeedback={formik.errors.name}
+                validFeedback="Looks good!"
+              />
+              {formik.errors.name && (
+                <p
+                  style={{
+                    color: "red"
+                  }}
+                >
+                  {formik.errors.name}
+                </p>
+              )}
+            </FormGroup>
+
+          </Col>
+          <Col sm={12} md={3}>
+            <FormGroup>
+              <Label for='remarks'>Remarks</Label>
+              <Input
+                id='remarks'
+                name='remarks'
+                placeholder='Remarks'
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.remarks}
+                isValid={formik.isValid}
+                isTouched={formik.touched.remarks}
+                invalidFeedback={formik.errors.remarks}
+                validFeedback="Looks good!"
+              />
+            </FormGroup>
+          </Col>
+          <Col sm={12} md={2}>
+             <FormGroup className='mt-2'>
+            <div className='d-flex'>
+              <p className='font-weight-bold mr-auto mb-0'>{isDevice ? "Purchase For Devices" : "Purchase For Packages"}</p>
+              <CustomInput type='switch' id='chnage' checked={isDevice} onChange={() => setIsdevice(!isDevice)} />
+            </div>
+          </FormGroup>
+          </Col>
+          <FormGroup className='mb-2'>
+
+          </FormGroup>
+
         </Row>
         <hr />
+        {formik.errors.products && (
+          <p
+            style={{
+              color: "red"
+            }}
+          >
+            {formik.errors.products}
+          </p>
+        )}
         {formik.values.products &&
           formik.values.products.map((data, index) => (
             <Row>
-              <Col sm={12} md={3}>
+
+              {isDevice ? (<Col sm={12} md={3}>
                 <FormGroup>
-                  <Label for='device_id'>Package</Label>
+                  <Label for='device_id'>Device</Label>
 
                   <Select
                     isClearable={false}
@@ -280,52 +303,54 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
                       </p>
                     )}
                 </FormGroup>
-              </Col>
-              <Col sm={12} md={3}>
-                <FormGroup>
-                  <Label for='package_id'>Package</Label>
+              </Col>) : ''}
+              {isDevice ? '' : (
+                <Col sm={12} md={3}>
+                  <FormGroup>
+                    <Label for='package_id'>Package</Label>
 
-                  <Select
-                    isClearable={false}
-                    classNamePrefix='select'
-                    options={packageOptions}
-                    type="text"
-                    name='package_id'
-                    id='package_id'
-                    placeholder='Select Package'
-                    onFocus={e => e.target.select()}
+                    <Select
+                      isClearable={false}
+                      classNamePrefix='select'
+                      options={packageOptions}
+                      type="text"
+                      name='package_id'
+                      id='package_id'
+                      placeholder='Select Package'
+                      onFocus={e => e.target.select()}
 
-                    onChange={(e) => {
-                      formik.setFieldValue(
-                        `products[${index}].package_id`,
-                        e.value
-                      )
-                      packageSelectedValue[index] = e
-                    }}
-                    onBlur={formik.handleBlur}
-                    value={packageSelectedValue[index]}
-                    isValid={formik.isValid}
-                    isTouched={formik.touched.package_id}
-                    validFeedback="Looks good!"
+                      onChange={(e) => {
+                        formik.setFieldValue(
+                          `products[${index}].package_id`,
+                          e.value
+                        )
+                        packageSelectedValue[index] = e
+                      }}
+                      onBlur={formik.handleBlur}
+                      value={packageSelectedValue[index]}
+                      isValid={formik.isValid}
+                      isTouched={formik.touched.package_id}
+                      validFeedback="Looks good!"
 
-                  />
-                  {formik.errors[
-                    `products[${index}]package_id`
-                  ] && (
-                      <p
-                        style={{
-                          color: 'red'
-                        }}>
-                        {
-                          formik.errors[
-                          `products[${index}]package_id`
-                          ]
-                        }
-                      </p>
-                    )}
-                </FormGroup>
-              </Col>
-              <Col sm={12} md={1}>
+                    />
+                    {formik.errors[
+                      `products[${index}]package_id`
+                    ] && (
+                        <p
+                          style={{
+                            color: 'red'
+                          }}>
+                          {
+                            formik.errors[
+                            `products[${index}]package_id`
+                            ]
+                          }
+                        </p>
+                      )}
+                  </FormGroup>
+                </Col>
+              )}
+              <Col sm={12} md={2}>
                 <FormGroup>
                   <Label for='unit_price'>Unit Price</Label>
                   <Input
@@ -365,7 +390,7 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
                     )}
                 </FormGroup>
               </Col>
-              <Col sm={12} md={1}>
+              <Col sm={12} md={2}>
                 <FormGroup>
                   <Label for='quantity'>Quantity</Label>
                   <Input
@@ -450,7 +475,20 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
               </Button.Ripple>
             </FormGroup>
           </Col>
-          <Col sm={12} md={4}>
+
+          <Col sm={12} md={3}>
+            <FormGroup>
+              <Label for='total'>Grand Total</Label>
+              <Input
+                disabled
+                id='total'
+                name='total'
+                placeholder='Grand Total'
+                value={formik.values.total}
+              />
+            </FormGroup>
+          </Col>
+          <Col sm={12} md={3}>
             <FormGroup>
               <Label for='discount'>Discount</Label>
               <Input
@@ -461,19 +499,19 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
                 onChange={(e) => {
                   formik.setFieldValue('discount', e.target.value)
                 }}
-                
+
               />
             </FormGroup>
           </Col>
-          <Col sm={12} md={4}>
+          <Col sm={12} md={3}>
             <FormGroup>
-              <Label for='grand_total'>Grand Total</Label>
+              <Label for='total_after_discount'>Total after Discount</Label>
               <Input
                 disabled
-                id='grand_total'
-                name='grand_total'
+                id='total_after_discount'
+                name='total_after_discount'
                 placeholder='Grand Total'
-                value={formik.values.grand_total - formik.values.discount}
+                value={formik.values.total_after_discount}
               />
             </FormGroup>
           </Col>
@@ -489,7 +527,8 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
             formik.setFieldValue('remarks', '')
             formik.setFieldValue('serial_no', '')
             formik.setFieldValue('discount', 0)
-            formik.setFieldValue('grand_total', 0)
+            formik.setFieldValue('total', 0)
+            formik.setFieldValue('total_after_discount', 0)
             formik.setFieldValue('products', [
               {
                 device_id: '',
