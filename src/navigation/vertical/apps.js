@@ -39,6 +39,13 @@ export default [
 
   },
   {
+    id: 'sale',
+    title: 'Sale',
+    icon: <BarChart2 size={20} />,
+    navLink: '/ISPBS/apps/sale/list'
+
+  },
+  {
     id: 'expense',
     title: 'Expense',
     icon: <DollarSign size={20} />,
