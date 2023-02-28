@@ -51,5 +51,20 @@ export default [
     icon: <DollarSign size={20} />,
     navLink: '/ISPBS/apps/expense/list'
 
+  },
+  {
+    header: 'Reports Section'
+  },
+  {
+    id: 'getExpensesReport',
+    title: 'Expense Report',
+    icon: <DollarSign size={20} />,
+    navLink: '/ISPBS/apps/getExpensesReprot/list'
+  },
+  {
+    id: 'getMonthlyExpensesReport',
+    title: 'Monthly Expense Report',
+    icon: <DollarSign size={20} />,
+    navLink: '/ISPBS/apps/getMonthlyExpensesReport/list'
   }
 ]
