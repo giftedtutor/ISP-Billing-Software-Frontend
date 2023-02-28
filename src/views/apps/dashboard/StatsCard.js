@@ -6,6 +6,7 @@ import { TrendingUp, Activity, Archive, TrendingDown, Users, Box, DollarSign } f
 import { Card, CardHeader, PieChartFill, CardTitle, CardBody, CardText, Row, Col, Media } from 'reactstrap'
 import baseURL from '../../../baseURL/baseURL'
 import { useHistory } from 'react-router-dom'
+import Cookies from 'js-cookie'
 
 const StatsCard = ({ cols }) => {
   const [data2, setData2] = React.useState([])
@@ -13,8 +14,8 @@ const StatsCard = ({ cols }) => {
   const history = useHistory()
   const data = [
     {
-      title: data2.totalSuppliers,
-      subtitle: 'Suppliers',
+      title: data2.customers,
+      subtitle: 'Customers',
       color: 'light-primary',
       icon: <Users size={24} />,
       navLink: '/ISPBS/apps/user/list'
@@ -78,10 +79,9 @@ const StatsCard = ({ cols }) => {
   ]
  
   useEffect(() => {
-    Axios.get(`${baseURL}/getDashboardStats`)
+    Axios.get(`${baseURL}/generals/getDashboardStats?user_id=${Cookies.get("id")}`)
     .then(response => {
-      console.log(response.data)
-      setData2(response.data)
+      setData2(response.data.data)
       setLoading(false)
     })
     .catch(err => console.log(err))
