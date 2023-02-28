@@ -93,7 +93,7 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
 
 
   const submitForm = (data) => {
-    axios.post(`${baseURL}/stocks/updateStock`, data.values)
+    axios.put(`${baseURL}/stocks/updateStock`, data.values)
       .then(res => {
         if (res.data.status === "ok") {
           toggleSidebarEdit()
@@ -112,6 +112,7 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
 
   const formik = useFormik({
     initialValues: {
+      _id: '',
       user_id: Cookies.get("id"),
       name: '',
       remarks: '',
@@ -121,8 +122,8 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
       status: "PURCHASE",
       products: [
         {
-          device_id: '',
-          package_id: '',
+          device_id: null,
+          package_id: null,
           unit_price: 0,
           quantity: 0,
           total: 0
@@ -151,6 +152,7 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
     .then((response) => {
     
       setEditData(response.data)
+      formik.setFieldValue('_id', response.data._id)
       formik.setFieldValue('serial_no', response.data.serial_no)
       formik.setFieldValue('name', response.data.name)
       formik.setFieldValue('remarks', response.data.remarks)
@@ -165,6 +167,12 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
       response.data.products.forEach((data, index) => {
         deviceSelectedValue[index] = data.device_id
         packageSelectedValue[index] =  data.package_id 
+
+        if (data.device_id) {
+          setIsdevice(true)
+        } else {
+          setIsdevice(false)
+        }
       })
       setDeviceSelectedValue(deviceSelectedValue)
       setPackageSelectedValue(packageSelectedValue)
@@ -494,8 +502,8 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
                   formik.setFieldValue('products', [
                     ...formik.values.products,
                     {
-                      device_id: '',
-                      package_id: '',
+                      device_id: null,
+                      package_id: null,
                       unit_price: 0,
                       quantity: 0,
                       total: 0
@@ -562,8 +570,8 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
             formik.setFieldValue('total_after_discount', 0)
             formik.setFieldValue('products', [
               {
-                device_id: '',
-                package_id: '',
+                device_id: null,
+                package_id: null,
                 unit_price: 0,
                 quantity: 0,
                 total: 0

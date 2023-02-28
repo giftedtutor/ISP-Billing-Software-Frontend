@@ -26,17 +26,19 @@ const generatePDF = (CustomerData) => {
     doc.setFont(undefined, 'normal')
 
     doc.setFontSize(12)
-    const tableColumn = ["Sr. No", "Name", "Father Name", "Email", "CNIC", "Joining Date"]
+    const tableColumn = ["Sr. No", "Serial No", "Name", "Remarks", "Total", "Discount", "Total After Discount"]
 
     const tableRows = []
 
     CustomerData.forEach((data, index) => {
         const TableData = [
             index + 1,
+            data.serial_no,
             data.name,
-            data.father_name,
-            data.email,
-            data.cnic,
+            data.remarks,
+            data.total.toLocaleString(undefined, { maximumFractionDigits: 2 }),
+            data.discount.toLocaleString(undefined, { maximumFractionDigits: 2 }),
+            data.total_after_discount.toLocaleString(undefined, { maximumFractionDigits: 2 }),
             moment(data.date).format('DD/MM/YYYY')
             //   .toLocaleString(undefined, { maximumFractionDigits: 2 }),
         ]
@@ -49,7 +51,10 @@ const generatePDF = (CustomerData) => {
         startY: yPos,
 
         columnStyles: {
-            0: { halign: 'left' } //cellWidth: 13
+            0: { halign: 'left' }, //cellWidth: 13
+            4: { halign: 'center' },
+            5: { halign: 'center' },
+            6: { halign: 'center' }
         }
     })
 
@@ -63,7 +68,7 @@ const generatePDF = (CustomerData) => {
 
     const dateStr = date[0] + date[1] + date[2] + date[3] + date[4]
 
-    doc.save(`CustomersList${dateStr}.pdf`)
+    doc.save(`PurchaseOrdersList${dateStr}.pdf`)
 }
 
 export default generatePDF

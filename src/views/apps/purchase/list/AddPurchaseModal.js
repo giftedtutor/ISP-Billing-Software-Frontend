@@ -463,8 +463,8 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
                   formik.setFieldValue('products', [
                     ...formik.values.products,
                     {
-                      device_id: '',
-                      package_id: '',
+                      device_id: null,
+                      package_id: null,
                       unit_price: 0,
                       quantity: 0,
                       total: 0
@@ -531,8 +531,8 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
             formik.setFieldValue('total_after_discount', 0)
             formik.setFieldValue('products', [
               {
-                device_id: '',
-                package_id: '',
+                device_id: null,
+                package_id: null,
                 unit_price: 0,
                 quantity: 0,
                 total: 0
