@@ -78,5 +78,17 @@ export default [
     title: 'Monthly Purchase Report',
     icon: <DollarSign size={20} />,
     navLink: '/ISPBS/apps/getMonthlyPurchaseReport/list'
+  },
+  {
+    id: 'getSaleReport',
+    title: 'Sale Report',
+    icon: <DollarSign size={20} />,
+    navLink: '/ISPBS/apps/getSaleReprot/list'
+  },
+  {
+    id: 'getMonthlySaleReport',
+    title: 'Monthly Sale Report',
+    icon: <DollarSign size={20} />,
+    navLink: '/ISPBS/apps/getMonthlySaleReport/list'
   }
 ]
