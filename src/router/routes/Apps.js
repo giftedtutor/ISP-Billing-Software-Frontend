@@ -172,8 +172,16 @@ const AppRoutes = [
     component: lazy(() => import('../../views/apps/getExpensesReprot/list'))
   },
   {
+    path: '/ISPBS/apps/getPurchaseReprot/list',
+    component: lazy(() => import('../../views/apps/getPurchaseReprot/list'))
+  },
+  {
     path: '/ISPBS/apps/getMonthlyExpensesReport/list',
     component: lazy(() => import('../../views/apps/getMonthlyExpensesReport/list'))
+  },
+  {
+    path: '/ISPBS/apps/getMonthlyPurchaseReport/list',
+    component: lazy(() => import('../../views/apps/getMonthlyPurchaseReport/list'))
   },
   {
     path: '/ISPBS/apps/user/edit',

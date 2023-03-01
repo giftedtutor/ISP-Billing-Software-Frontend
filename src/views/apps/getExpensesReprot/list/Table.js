@@ -5,8 +5,6 @@ import Cookies from "js-cookie"
 import { DotLoader } from "react-spinners"
 import Pagination from "react-js-pagination"
 import { toast } from "react-toastify"
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { useTheme } from '@mui/material/styles'
 import { ChevronDown, Share, Printer, FileText, File, Grid, Copy, Slack, User, Settings, Database, Edit2, MoreVertical, Trash2, Archive } from 'react-feather'
 
 // ** Reactstrap Imports
@@ -53,9 +51,6 @@ const UsersList = () => {
     setLoading(true)
     setPageNo(pageNumber)
   }
-
-  const theme = useTheme()
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   useEffect(() => {
     setLoading(true)

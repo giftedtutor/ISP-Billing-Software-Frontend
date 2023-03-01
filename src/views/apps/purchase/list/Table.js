@@ -7,8 +7,6 @@ import Cookies from "js-cookie"
 import { DotLoader } from "react-spinners"
 import Pagination from "react-js-pagination"
 import { toast } from "react-toastify"
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { useTheme } from '@mui/material/styles'
 import SidebarAdd from './AddPurchaseModal'
 import SidebarEdit from './EditPurchaseModal'
 import Select from 'react-select'
@@ -80,9 +78,6 @@ const UsersList = () => {
     setLoading(true)
     setPageNo(pageNumber)
   }
-
-  const theme = useTheme()
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   const deletePurchase = () => {
     axios.delete(`${baseURL}/stocks/deleteStock?stock_id=${deleteID}`)

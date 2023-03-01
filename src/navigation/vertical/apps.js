@@ -66,5 +66,17 @@ export default [
     title: 'Monthly Expense Report',
     icon: <DollarSign size={20} />,
     navLink: '/ISPBS/apps/getMonthlyExpensesReport/list'
+  },
+  {
+    id: 'getPurchaseReport',
+    title: 'Purchase Report',
+    icon: <DollarSign size={20} />,
+    navLink: '/ISPBS/apps/getPurchaseReprot/list'
+  },
+  {
+    id: 'getMonthlyPurchaseReport',
+    title: 'Monthly Purchase Report',
+    icon: <DollarSign size={20} />,
+    navLink: '/ISPBS/apps/getMonthlyPurchaseReport/list'
   }
 ]

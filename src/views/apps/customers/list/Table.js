@@ -7,8 +7,6 @@ import Cookies from "js-cookie"
 import { DotLoader } from "react-spinners"
 import Pagination from "react-js-pagination"
 import { toast } from "react-toastify"
-import useMediaQuery from '@mui/material/useMediaQuery'
-import { useTheme } from '@mui/material/styles'
 import SidebarAdd from './AddCustomerModal'
 import SidebarEdit from './EditCustomerModal'
 import Select from 'react-select'
@@ -80,9 +78,6 @@ const UsersList = () => {
     setLoading(true)
     setPageNo(pageNumber)
   }
-
-  const theme = useTheme()
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   const deleteCustomer = () => {
     axios.delete(`${baseURL}/customers/deleteCustomer?customer_id=${deleteID}`)

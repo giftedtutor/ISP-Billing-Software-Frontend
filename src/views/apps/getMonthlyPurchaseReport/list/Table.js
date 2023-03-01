@@ -1,14 +1,10 @@
 /* eslint-disable no-unused-vars */
-
 import React, { Fragment, useState, useEffect } from "react"
-import { useHistory, Link } from "react-router-dom"
 import baseURL from "../../../../baseURL/baseURL.js"
 import Cookies from "js-cookie"
 import { DotLoader } from "react-spinners"
 import Pagination from "react-js-pagination"
 import { toast } from "react-toastify"
-import SidebarAdd from './AddExpenseModal'
-import SidebarEdit from './EditExpenseModal'
 import { ChevronDown, Share, Printer, FileText, File, Grid, Copy, Slack, User, Settings, Database, Edit2, MoreVertical, Trash2, Archive } from 'react-feather'
 
 // ** Reactstrap Imports
@@ -18,17 +14,13 @@ import {
   Card,
   Input,
   Label,
-  Button,
   CardBody,
-  CardTitle,
-  CardHeader,
-  Modal, ModalHeader, ModalBody, ModalFooter, Alert,
   DropdownMenu,
   DropdownItem,
   DropdownToggle,
   UncontrolledDropdown,
-  CardImg,
-  CardText
+
+  FormGroup
 } from 'reactstrap'
 
 // ** Styles
@@ -36,6 +28,7 @@ import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import axios from "axios"
 import generatePDF from "./TablePDF.js"
+import moment from "moment"
 
 const override = {
   display: "block",
@@ -45,109 +38,56 @@ const override = {
 }
 
 const UsersList = () => {
-  const [deleteModal, setDeleteModal] = useState(false)
-  const [SidebarAddOpen, setSidebarAddOpen] = useState(false)
-  const [SidebarEditOpen, setSidebarEditOpen] = useState(false)
+  const [month, setMonth] = useState('')
+  const [toDate, setToDate] = useState('')
 
-
-  // ** Function to toggle SidebarAdd
-  const toggleSidebarAdd = () => setSidebarAddOpen(!SidebarAddOpen)
-  const toggleSidebarEdit = () => setSidebarEditOpen(!SidebarEditOpen)
-
-  const history = useHistory()
   const [search, setSearch] = useState("")
   const [isLoading, setLoading] = useState(true)
   const [getData, setGetData] = useState([])
   const [pageNo, setPageNo] = useState(1)
   const [total, setTotal] = useState(10)
   const [record, setRecord] = useState(10)
-  const [refresh, setRefresh] = useState(false)
-  const [deleteID, setDeleteID] = useState()
-  const [grade, setGrade] = useState('')
-  const [editID, setEditID] = useState()
   const handlePageChange = (pageNumber) => {
     setLoading(true)
     setPageNo(pageNumber)
   }
 
-  const deleteExpense = () => {
-    axios.delete(`${baseURL}/expenses/deleteExpense?expense_id=${deleteID}`)
-      .then(response => {
-        toast(response.data.message)
-        setRefresh(true)
-        console.log("Delete", response)
-      })
-      .catch(err => console.log(err))
-  }
 
   useEffect(() => {
     setLoading(true)
-    axios.get(`${baseURL}/expenses/getExpenses?user_id=${Cookies.get("id")}&&pageNo=${pageNo}&&records=${record}`)
+    axios.get(`${baseURL}/stocks/getMonthlyPurchaseReport?user_id=${Cookies.get("id")}&&pageNo=${pageNo}&&records=${record}&&month=${month && moment(month).format('MM/YYYY')}`)
       .then(response => {
         console.log("Get Expenses Data", response)
         setGetData(response.data.data)
         if (response.data.data.length === 0) {
-          toast('No Data in this Table!')
+          toast('No Data against provided Input!')
+          setGetData([])
         }
         setTotal(response.data.totalPages)
         setLoading(false) //stop loading when data is fetched
       }).catch(err => console.log(err))
-  }, [pageNo, record, refresh, grade, SidebarAddOpen, SidebarEditOpen])
+  }, [pageNo, record, month, toDate])
 
   const filterDataOfEachColumn = getData.filter(item => {
-    return search !== "" ? item.title.toLowerCase().includes(search.toLowerCase()) ||
-      item.detail.toLowerCase().includes(search.toLowerCase()) ||
-      item.price.toString().includes(search.toString()) : item
+    return search !== "" ? item.serial_no.toLowerCase().includes(search.toLowerCase()) ||
+    item.name.toLowerCase().includes(search.toLowerCase()) ||
+    item.date.toLowerCase().includes(search.toLowerCase()) ||
+    item.discount.toLowerCase().includes(search.toLowerCase()) ||
+    item.total_after_discount.toLowerCase().includes(search.toLowerCase()) ||
+    item.total.toString().includes(search.toString()) : item
   })
   const TableData = filterDataOfEachColumn.map((data, index) => {
     return (
       <tr>
-        <th scope="row">{index + 1}</th>
-        <th scope="row">{data.title}</th>
-        <td>{data.detail}</td>
-        <td>{data.price}</td>
-        <td>
-          <div 
-            className="btn-group"
-            role="group"
-            aria-label="Basic outlined example"
-          >
+          <th scope="row">{index + 1}</th>
+        <th scope="row">{data.serial_no}</th>
+        <td>{data.name}</td>
+        <td>{data.total}</td>
+        <td>{data.discount}</td>
+        <td>{data.total_after_discount}</td>
+        <td>{data.date}</td>
 
-            <div className='column-action'>
-              <UncontrolledDropdown>
-                <DropdownToggle tag='div' className='btn btn-sm'>
-                  <MoreVertical size={14} className='cursor-pointer' />
-                </DropdownToggle>
-                <DropdownMenu>
 
-                  <DropdownItem
-                    // tag={Link}
-                    // to={`/apps/user/view/`}
-                    className='w-100'
-                    onClick={() => {
-
-                      setDeleteModal(!deleteModal)
-                      setDeleteID(data._id)
-                    }}
-                  >
-                    <Trash2 size={14} className='me-50' /> &nbsp;
-                    <span className='align-middle'>Delete</span>
-                  </DropdownItem>
-                  <DropdownItem
-                    className='w-100'
-                    onClick={() => {
-                      toggleSidebarEdit()
-                      setEditID(data._id)
-                    }}
-                  >
-                    <Edit2 size={14} className='me-50' /> &nbsp;
-                    <span className='align-middle'>Edit</span>
-                  </DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
-            </div>
-          </div>
-        </td>
       </tr>
     )
   })
@@ -158,39 +98,27 @@ const UsersList = () => {
         <CardBody>
           <div>
             <div>
-              {/* Delete Model */}
-              <div className='vertically-centered-modal'>
-
-                <Modal isOpen={deleteModal} toggle={() => setDeleteModal(!deleteModal)} className='modal-dialog-centered'>
-                  <ModalHeader toggle={() => setDeleteModal(!deleteModal)}>Deletion Confirmation!</ModalHeader>
-                  <ModalBody>
-                    Are you sure, you want to delete the selected Expense?
-                    <br />
-                    This cannot be undone!
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button.Ripple color='danger' outline autoFocus onClick={() => {
-                      setDeleteModal(!deleteModal)
-                    }}>
-                      No
-                    </Button.Ripple>
-                    <Button.Ripple color='success' outline onClick={() => {
-
-                      deleteExpense()
-                      setDeleteModal(!deleteModal)
-                    }}>
-                      Yes
-                    </Button.Ripple>{' '}
-                  </ModalFooter>
-                </Modal>
-              </div>
-          
             </div>
             <div className="container">
 
               <Row>
-                <Col md='3'>
-                  <div className='d-flex align-items-center mb-sm-0 mb-1 me-1'>
+                <Col className='my-md-0 my-1' md='3' >
+                  <FormGroup>
+                    <Label for='name'>Select Month</Label>
+                    <Input
+                      type="month"
+                      id='name'
+                      name='name'
+                      value={month}
+                      onChange={e => setMonth(e.target.value)}
+                    />
+                  </FormGroup>
+                </Col>
+                <Col className='my-md-0 my-1' md='3' >
+                
+                </Col>
+                <Col md='4'>
+                  <div className='d-flex align-items-center mb-sm-0 mb-1 me-1 mt-2'>
                     <Input
                       id='search-invoice'
                       className='ms-50 w-100'
@@ -201,22 +129,15 @@ const UsersList = () => {
                     />
                   </div>
                 </Col>
-                <Col className='my-md-0 my-1' md='3' ></Col>
-                <Col className='my-md-0 my-1' md='3' >
-                  
-                </Col>
-                <Col className='my-md-0 my-1' md='3' >
-                  <div className='d-flex align-items-center table-header-actions'>
+
+                <Col className='my-md-0 my-1 mt-2' md='2' >
+                  <div className='d-flex align-items-center table-header-actions mt-2'>
                     <UncontrolledDropdown className='me-1'>
                       <DropdownToggle color='secondary' caret outline>
                         <Share className='font-small-4 me-50' />  &nbsp;
                         <span className='align-middle'>Export</span>
                       </DropdownToggle>
                       <DropdownMenu>
-                        {/* <DropdownItem className='w-100'>
-                          <Grid className='font-small-4 me-50' />  &nbsp;
-                          <span className='align-middle'>Excel</span>
-                        </DropdownItem> */}
                         <DropdownItem className='w-100' onClick={() => {
                           generatePDF(filterDataOfEachColumn)
                         }}>
@@ -225,13 +146,7 @@ const UsersList = () => {
                         </DropdownItem>
                       </DropdownMenu>
                     </UncontrolledDropdown> &nbsp; &nbsp;
-                    <Button className='add-new-user mr-1' color='primary'
-                      onClick={() => {
-                        toggleSidebarAdd()
-                      }}
-                    >
-                      Add New Expense
-                    </Button>
+
                   </div>
                 </Col>
               </Row>
@@ -262,11 +177,13 @@ const UsersList = () => {
                   <table className="table table-striped">
                     <thead>
                       <tr>
-                        <th scope="col">Sr. No</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Detail</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Actions</th>
+                      <th scope="col">Sr. No</th>
+                        <th scope="col">PO No</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Discount</th>
+                        <th scope="col">Total After Discount</th>
+                        <th scope="col">Date</th>
                       </tr>
                     </thead>
                     <tbody>{TableData}</tbody>
@@ -322,9 +239,6 @@ const UsersList = () => {
           </div>
         </CardBody>
       </Card>
-
-      <SidebarAdd open={SidebarAddOpen} toggleSidebarAdd={toggleSidebarAdd} />
-      <SidebarEdit open={SidebarEditOpen} toggleSidebarEdit={toggleSidebarEdit} editID={editID} setEditID={setEditID}/>
     </Fragment >
   )
 }
