@@ -21,57 +21,36 @@ const StatsCard = ({ cols }) => {
       navLink: '/ISPBS/apps/user/list'
     },
     {
-      title: data2.totalClients,
-      subtitle: 'Clients',
-      color: 'light-info',
-      icon: <Users size={24} />,
-      navLink: '/ISPBS/apps/client/list'
-    },
-    {
-      title: data2.totalEmployees,
-      subtitle: 'Employees',
-      color: 'light-danger',
-      icon: <Users size={24} />,
-      navLink: '/ISPBS/apps/employee/list'
-    },
-    {
-      title: data2.totalProducts,
-      subtitle: 'Stocks',
+      title: data2.totalDevices,
+      subtitle: 'Devices',
       color: 'light-danger',
       icon: <Archive size={24} />,
       navLink: '/ISPBS/apps/headOfficeInventory/list'
     },
     {
-      title: data2.totalItems,
-      subtitle: 'Items',
+      title: data2.totalPackages,
+      subtitle: 'Packages',
       color: 'light-success',
       icon: <Box size={24} />,
       navLink: '/ISPBS/apps/stock/updateItemRates'
     },
     {
-      title: data2.totalProjects,
-      subtitle: 'Projects',
-      color: 'light-success',
-      icon: <Activity size={24} />,
-      navLink: '/ISPBS/apps/project/listing'
-    },
-    {
-      title: data2.inprogressProducionOrder,
-      subtitle: 'Inprogress Production Orders',
+      title: `${data2.totalSales} (PKR)`,
+      subtitle: 'Sales',
       color: 'light-success',
       icon: <TrendingUp size={24} />,
       navLink: '/ISPBS/apps/productionOrderUPVC/list'
     },
     {
-      title: data2.canceledProducionOrder,
-      subtitle: 'Canceled Production Orders',
+      title: `${data2.totalExpenses} (PKR)`,
+      subtitle: 'Expenses',
       color: 'light-success',
       icon: <TrendingDown size={24} />,
       navLink: '/ISPBS/apps/productionOrderUPVC/list'
     },
     {
-      title: data2.completedProducionOrder,
-      subtitle: 'Completed Production Orders',
+      title: `${data2.totalPurchases} (PKR)`,
+      subtitle: 'Purchases',
       color: 'light-success',
       icon: <TrendingUp size={24} />,
       navLink: '/ISPBS/apps/productionOrderUPVC/list'

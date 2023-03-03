@@ -43,14 +43,7 @@ const ViewDash = () => {
       <Col  xs={12} md={6}> <ProjectTimeline/> </Col>
        <Col  xs={12} md={6}> <MonthWiseSale/> </Col>        
       </Row>
-
-      <Row  >
-      {/* <Col  xs={12} md={6}> <VehicleStatus/> </Col>  */}
       
-       <Col xs={12} md={12}>  <ProductionOrderStatus /></Col>
-      </Row>
-
-    
       <Row>
       <Col xs={12} md={12}>  <InventoryItemStatus /></Col>
          

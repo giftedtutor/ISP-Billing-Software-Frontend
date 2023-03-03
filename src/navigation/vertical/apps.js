@@ -58,37 +58,37 @@ export default [
   {
     id: 'getExpensesReport',
     title: 'Expense Report',
-    icon: <DollarSign size={20} />,
+    icon: <ArrowUpCircle size={20} />,
     navLink: '/ISPBS/apps/getExpensesReprot/list'
   },
   {
     id: 'getMonthlyExpensesReport',
     title: 'Monthly Expense Report',
-    icon: <DollarSign size={20} />,
+    icon: <ArrowUpCircle size={20} />,
     navLink: '/ISPBS/apps/getMonthlyExpensesReport/list'
   },
   {
     id: 'getPurchaseReport',
     title: 'Purchase Report',
-    icon: <DollarSign size={20} />,
+    icon: <ArrowUpCircle size={20} />,
     navLink: '/ISPBS/apps/getPurchaseReprot/list'
   },
   {
     id: 'getMonthlyPurchaseReport',
     title: 'Monthly Purchase Report',
-    icon: <DollarSign size={20} />,
+    icon: <ArrowUpCircle size={20} />,
     navLink: '/ISPBS/apps/getMonthlyPurchaseReport/list'
   },
   {
     id: 'getSaleReport',
     title: 'Sale Report',
-    icon: <DollarSign size={20} />,
+    icon: <ArrowUpCircle size={20} />,
     navLink: '/ISPBS/apps/getSaleReprot/list'
   },
   {
     id: 'getMonthlySaleReport',
     title: 'Monthly Sale Report',
-    icon: <DollarSign size={20} />,
+    icon: <ArrowUpCircle size={20} />,
     navLink: '/ISPBS/apps/getMonthlySaleReport/list'
   }
 ]
