@@ -32,7 +32,7 @@ const ViewDash = () => {
   return (
     <DashState>
     <Container >
-      <Row>
+      <Row> 
         <Col> <StatsCard cols={{ md: '3', sm: '6' }}/></Col>
       </Row>
       <Row>
