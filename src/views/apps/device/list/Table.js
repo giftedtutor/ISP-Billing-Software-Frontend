@@ -36,6 +36,7 @@ import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import axios from "axios"
 import generatePDF from "./TablePDF.js"
+import moment from "moment"
 
 const override = {
   display: "block",
@@ -95,19 +96,26 @@ const UsersList = () => {
   }, [pageNo, record, refresh, grade, SidebarAddOpen, SidebarEditOpen])
 
   const filterDataOfEachColumn = getData.filter(item => {
+    if (item.device_id === undefined) {
+      item.device_id = ''
+    }
     return search !== "" ? item.name.toLowerCase().includes(search.toLowerCase()) ||
       item.mac_address.toLowerCase().includes(search.toLowerCase()) ||
+      item.device_id.toLowerCase().includes(search.toLowerCase()) ||
+      item.date.toLowerCase().includes(search.toLowerCase()) ||
       item.price.toString().includes(search.toString()) : item
   })
   const TableData = filterDataOfEachColumn.map((data, index) => {
     return (
       <tr>
         <th scope="row">{index + 1}</th>
+        <th scope="row">{data.device_id}</th>
         <th scope="row">{data.name}</th>
         <td>{data.mac_address}</td>
         <td>{data.price}</td>
+        <td>{moment(data.date).format('DD/MM/YYYY')}</td>
         <td>
-          <div 
+          <div
             className="btn-group"
             role="group"
             aria-label="Basic outlined example"
@@ -184,7 +192,7 @@ const UsersList = () => {
                   </ModalFooter>
                 </Modal>
               </div>
-          
+
             </div>
             <div className="container">
 
@@ -203,7 +211,7 @@ const UsersList = () => {
                 </Col>
                 <Col className='my-md-0 my-1' md='3' ></Col>
                 <Col className='my-md-0 my-1' md='3' >
-                  
+
                 </Col>
                 <Col className='my-md-0 my-1' md='3' >
                   <div className='d-flex align-items-center table-header-actions'>
@@ -263,9 +271,11 @@ const UsersList = () => {
                     <thead>
                       <tr>
                         <th scope="col">Sr. No</th>
+                        <th scope="col">ID</th>
                         <th scope="col">Name</th>
                         <th scope="col">MAC Address</th>
                         <th scope="col">Price</th>
+                        <th scope="col">Date</th>
                         <th scope="col">Actions</th>
                       </tr>
                     </thead>
@@ -324,7 +334,7 @@ const UsersList = () => {
       </Card>
 
       <SidebarAdd open={SidebarAddOpen} toggleSidebarAdd={toggleSidebarAdd} />
-      <SidebarEdit open={SidebarEditOpen} toggleSidebarEdit={toggleSidebarEdit} editID={editID} setEditID={setEditID}/>
+      <SidebarEdit open={SidebarEditOpen} toggleSidebarEdit={toggleSidebarEdit} editID={editID} setEditID={setEditID} />
     </Fragment >
   )
 }

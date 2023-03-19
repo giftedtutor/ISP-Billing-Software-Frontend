@@ -34,8 +34,10 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
       user_id: Cookies.get("id"),
       _id: editData?._id,
       name: data.name,
+      device_id: data.device_id,
       price: data.price,
-      mac_address: data.mac_address
+      mac_address: data.mac_address,
+      date: data.date
     }
     axios.put(`${baseURL}/devices/updateDevice`, DATA)
       .then(res => {
@@ -76,6 +78,17 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
 
       <Form onSubmit={handleSubmit(onSubmit)}>
         <FormGroup>
+          <Label for='device_id'>Device ID</Label>
+          <Input
+            id='device_id'
+            name='device_id'
+            defaultValue={editData?.device_id}
+            innerRef={register({ required: true })}
+            invalid={errors.device_id && true}
+            placeholder='Unique ID'
+          />
+        </FormGroup>
+        <FormGroup>
           <Label for='name'>Name</Label>
           <Input
             id='name'
@@ -86,7 +99,7 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
             placeholder='Device Name'
           />
         </FormGroup>
-        
+
         <FormGroup>
           <Label for='mac_address'>MAC Address</Label>
           <Input
@@ -108,6 +121,17 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
             placeholder='Price'
             innerRef={register({ required: true })}
             invalid={errors.price && true}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for='date'>Date</Label>
+          <Input
+            id='date'
+            name='date'
+            type="date"
+            defaultValue={editData?.date}
+            innerRef={register({ required: true })}
+            invalid={errors.date && true}
           />
         </FormGroup>
 

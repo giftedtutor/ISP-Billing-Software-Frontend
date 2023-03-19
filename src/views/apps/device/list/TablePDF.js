@@ -26,16 +26,18 @@ const generatePDF = (DeviceData) => {
     doc.setFont(undefined, 'normal')
 
     doc.setFontSize(12)
-    const tableColumn = ["Sr. No", "Name", "MAC Address", "Price"]
+    const tableColumn = ["Sr. No", "ID", "Name", "MAC Address", "Price", "Date"]
 
     const tableRows = []
 
     DeviceData.forEach((data, index) => {
         const TableData = [
             index + 1,
+            data.device_id,
             data.name,
             data.mac_address,
-            data.price
+            data.price,
+            data.date
             //   .toLocaleString(undefined, { maximumFractionDigits: 2 }),
         ]
         tableRows.push(TableData)

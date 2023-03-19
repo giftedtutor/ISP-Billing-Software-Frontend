@@ -24,8 +24,10 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
     const DATA = {
       user_id: Cookies.get("id"),
       name: data.name,
+      device_id: data.device_id,
       price: data.price,
-      mac_address: data.mac_address
+      mac_address: data.mac_address,
+      date: data.date
     }
     axios.post(`${baseURL}/devices/addDevice`, DATA)
       .then(res => {
@@ -62,6 +64,16 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
 
       <Form onSubmit={handleSubmit(onSubmit)}>
         <FormGroup>
+          <Label for='device_id'>Device ID</Label>
+          <Input
+            id='device_id'
+            name='device_id'
+            innerRef={register({ required: true })}
+            invalid={errors.device_id && true}
+            placeholder='Unique ID'
+          />
+        </FormGroup>
+        <FormGroup>
           <Label for='name'>Name</Label>
           <Input
             id='name'
@@ -92,7 +104,18 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
             invalid={errors.price && true}
           />
         </FormGroup>
-      
+        <FormGroup>
+          <Label for='date'>Date</Label>
+          <Input
+            id='date'
+            name='date'
+            type="date"
+            placeholder='date'
+            innerRef={register({ required: true })}
+            invalid={errors.date && true}
+          />
+        </FormGroup>
+
         <FormGroup className='d-flex mb-0'>
           <Button.Ripple className='mr-1' color='primary' type='submit'>
             Submit

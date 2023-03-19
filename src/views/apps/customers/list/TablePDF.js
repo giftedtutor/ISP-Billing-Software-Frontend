@@ -26,13 +26,14 @@ const generatePDF = (CustomerData) => {
     doc.setFont(undefined, 'normal')
 
     doc.setFontSize(12)
-    const tableColumn = ["Sr. No", "Name", "Father Name", "Email", "CNIC", "Joining Date"]
+    const tableColumn = ["Sr. No", "ID", "Name", "Father Name", "Email", "CNIC", "Joining Date"]
 
     const tableRows = []
 
     CustomerData.forEach((data, index) => {
         const TableData = [
             index + 1,
+            data.customer_id,
             data.name,
             data.father_name,
             data.email,
