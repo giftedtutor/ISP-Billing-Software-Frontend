@@ -47,6 +47,8 @@ const UsersList = () => {
   const [pageNo, setPageNo] = useState(1)
   const [total, setTotal] = useState(10)
   const [record, setRecord] = useState(10)
+
+  const [totalAmount, setTotalAmount] = useState(0)
   const handlePageChange = (pageNumber) => {
     setLoading(true)
     setPageNo(pageNumber)
@@ -59,6 +61,7 @@ const UsersList = () => {
       .then(response => {
         console.log("Get Expenses Data", response)
         setGetData(response.data.data)
+        setTotalAmount(response.data.total_amount)
         if (response.data.data.length === 0) {
           toast('No Data against provided Input!')
           setGetData([])
@@ -110,7 +113,7 @@ const UsersList = () => {
                   </FormGroup>
                 </Col>
                 <Col className='my-md-0 my-1' md='3' >
-                
+
                 </Col>
                 <Col md='4'>
                   <div className='d-flex align-items-center mb-sm-0 mb-1 me-1 mt-2'>
@@ -134,7 +137,7 @@ const UsersList = () => {
                       </DropdownToggle>
                       <DropdownMenu>
                         <DropdownItem className='w-100' onClick={() => {
-                          generatePDF(filterDataOfEachColumn)
+                          generatePDF(filterDataOfEachColumn, totalAmount)
                         }}>
                           <File className='font-small-4 me-50' />  &nbsp;
                           <span className='align-middle'>PDF</span>
@@ -180,6 +183,10 @@ const UsersList = () => {
                       </tr>
                     </thead>
                     <tbody>{TableData}</tbody>
+                    <tr>
+                      <th scope="col" colSpan={3}></th>
+                      <th scope="col" colSpan={2}> {totalAmount}</th>
+                    </tr>
                   </table>
                 </div>
               )}

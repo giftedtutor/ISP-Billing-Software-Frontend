@@ -5,7 +5,7 @@ import "jspdf-autotable"
 import moment from "moment"
 // import pakLogo from '../../../../../assets/images/logo/ISPBS_logo.jpg'
 
-const generatePDF = (ExpenseData) => {
+const generatePDF = (ExpenseData, totalAmount) => {
 
     let yPos = 10
     const doc = new jsPDF()
@@ -42,6 +42,8 @@ const generatePDF = (ExpenseData) => {
         ]
         tableRows.push(TableData)
     })
+    const TotalAmountRow = ['', '', '', '', totalAmount, '']
+    tableRows.push(TotalAmountRow)
 
     yPos += 5
 
