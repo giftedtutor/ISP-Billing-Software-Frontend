@@ -124,6 +124,7 @@ const Login = props => {
           Cookies.set("id", res.data._id)
           Cookies.set("userID", res.data._id)
           Cookies.set("token", res.data.token)
+          Cookies.set("profilePicture", res.data.profile_picture)
           Cookies.set("address", res.data.address)
           Cookies.set("role", 'Admin')
           ftn()

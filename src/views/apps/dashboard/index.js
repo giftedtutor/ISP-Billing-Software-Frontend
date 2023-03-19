@@ -4,8 +4,9 @@ import DashState from './context/dashState'
 
 // ** User List Component
 import StatsCard from './StatsCard'
-import SupplierLedgerGraph from "./supplierLedgerGraph"
-import ClientLedgerGraph from "./clientLedgerGraph"
+import PurchaseGraph from "./PurchaseGraph"
+import SaleGraph from "./SaleGraph"
+import ExpenseGraph from './ExpenseGraph'
 import InventoryItemStatus from "./inventoryItemStatus"
 import ProductionOrderStatus from "./productionOrderStatu"
 import VehicleStatus from "./vehicleStatus"
@@ -31,25 +32,19 @@ const ViewDash = () => {
 
   return (
     <DashState>
-    <Container >
-      <Row> 
-        <Col> <StatsCard cols={{ md: '3', sm: '6' }}/></Col>
-      </Row>
-      <Row>
-      <Col  xs={12} md={6}>  <SupplierLedgerGraph /></Col>
-       <Col  xs={12} md={6}>  <ClientLedgerGraph /></Col>        
-      </Row>
-      <Row>
-      <Col  xs={12} md={6}> <ProjectTimeline/> </Col>
-       <Col  xs={12} md={6}> <MonthWiseSale/> </Col>        
-      </Row>
-      
-      <Row>
-      <Col xs={12} md={12}>  <InventoryItemStatus /></Col>
-         
-      </Row>
-
-    </Container>
+      <Container >
+        <Row>
+          <Col> <StatsCard cols={{ md: '3', sm: '6' }} /></Col>
+        </Row>
+        <Row>
+          <Col xs={12} md={6}>  <PurchaseGraph /></Col>
+          <Col xs={12} md={6}>  <SaleGraph /></Col>
+        </Row>
+        <Row>
+          <Col xs={12} md={12}> <ExpenseGraph /> </Col>
+          {/* <Col xs={12} md={6}> <MonthWiseSale /> </Col> */}
+        </Row>
+      </Container>
     </DashState>
   )
 }

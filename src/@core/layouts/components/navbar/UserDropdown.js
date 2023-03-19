@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 // ** Custom Components
@@ -20,17 +20,21 @@ import Cookies from 'js-cookie'
 
 // ** Default Avatar Image
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg'
+import axios from 'axios'
+import baseURL from '../../../../baseURL/baseURL'
+import { toast } from 'react-toastify'
 
 const UserDropdown = () => {
   // ** Store Vars
   const dispatch = useDispatch()
 
-  const role = Cookies.get('role')
+  const role = Cookies.get('email')
   const name = Cookies.get('name')
+  const fileInputRef = useRef(null)
 
   // ** State
   const [userData, setUserData] = useState(null)
-
+  const [image, setImage] = useState('')
   //** ComponentDidMount
   useEffect(() => {
     if (isUserLoggedIn() !== null) {
@@ -50,6 +54,46 @@ const UserDropdown = () => {
   //** Vars
   const userAvatar = (userData && userData.avatar) || defaultAvatar
 
+  const uploadImageFunction = () => {
+    const File = fileInputRef.current.files[0]
+
+    const formData = new FormData()
+    formData.append("files", File)
+
+    if (File) {
+      axios.post(`${baseURL}/generals/uploadImage`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      })
+        .then(res => {
+          if (res.data.messsage === "Files Uploaded") {
+
+            setImage(res.data.data[0]?.img)
+            Cookies.set("profilePicture", res.data.data[0]?.img)
+            axios.put(`${baseURL}/users/updateUserDetails`, {
+              _id: Cookies.get("id"),
+              profile_picture: res.data.data[0]?.img
+            })
+              .then(res2 => {
+                if (res2.data.status === "ok") {
+                  toast(res.data.message)
+                } else {
+                  toast("Somthing went Wrong - Error")
+                }
+              })
+              .catch(err => {
+                toast(err)
+              })
+            toast("Image Picked Up!")
+          } else {
+            toast("Somthing went Wrong while Uploading File!")
+          }
+        })
+        .catch(err => {
+        })
+    }
+  }
   return (
     <UncontrolledDropdown tag='li' className='dropdown-user nav-item'>
       <DropdownToggle href='/' tag='a' className='nav-link dropdown-user-link' onClick={e => e.preventDefault()}>
@@ -59,7 +103,7 @@ const UserDropdown = () => {
           <span className='user-name font-weight-bold'> {name}</span>
           <span className='user-status'>{role}</span>
         </div>
-        <Avatar img={UserP} imgHeight='40' imgWidth='40' status='online' />
+        <Avatar img={`${baseURL}/files/${image === "" ? (Cookies.get("profilePicture")) : image}`} imgHeight='40' imgWidth='40' status='online' />
       </DropdownToggle>
       <DropdownMenu right>
         {/* <DropdownItem tag={Link} to='/pages/profile'>
@@ -91,6 +135,17 @@ const UserDropdown = () => {
           <HelpCircle size={14} className='mr-75' />
           <span className='align-middle'>FAQ</span>
         </DropdownItem> */}
+        <input type="file"
+          className='form-control'
+          onChange={(e) => {
+            uploadImageFunction(e.target.files[0])
+          }}
+          ref={fileInputRef} />
+        {/* <button onClick={uploadImageFunction}>Upload Image</button> */}
+        <DropdownItem>
+          <CheckSquare size={14} className='mr-75' />
+          <span className='align-middle'>Update Profile</span>
+        </DropdownItem>
         <DropdownItem tag={Link} to='/ISPBS/login' onClick={() => dispatch(handleLogout())}>
           <Power size={14} className='mr-75' />
           <span className='align-middle'>Logout</span>

@@ -7,26 +7,23 @@ import React, { useEffect, useState, useContext } from "react"
 import { Container, Row, Col } from "reactstrap"
 import { Line } from "react-chartjs-2"
 import { MDBContainer } from "mdbreact"
-import SDropDown from "./components/Supplierdropdown"
 import baseURL from '../../../baseURL/baseURL'
+import axios from "axios"
+import Cookies from "js-cookie"
+import moment from "moment"
 
-  //context api
-  import DashContext from './context/dashContext'
+const PurchaseGraph = () => {
 
-const SupplierLedgerGraph = () => {
-  //
-
-  const a = useContext(DashContext)
   const [data, setData] = React.useState([])
-  
+  const [data2, setData2] = React.useState([])
 
   const [isLoading, setLoading] = useState(true)
 
   const dataMine = {
-    labels: a.STime,
+    labels: data2,
     datasets: [
       {
-        label: "Payable",
+        label: "Purchases",
         fill: true,
         lineTension: 0.3,
         backgroundColor: "rgba(225, 204,230, .3)",
@@ -44,32 +41,33 @@ const SupplierLedgerGraph = () => {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: a.SPaid
+        data
       }
     ]
   }
 
   useEffect(() => {
-    fetch(`${baseURL}/supplierLedgerCurrentMonth`)   
-      .then((response) => response.json())
+    axios.get(`${baseURL}/stocks/getPurchaseReport?user_id=${Cookies.get("id")}`)
       .then((records) => {
-        const rec = records.SupplierLedger.map((data, index) => {
-          return data.remaining
+        const totalArray = []
+        const dateArray = []
+        console.log('.......', records.data.data)
+        records.data.data.forEach((data, index) => {
+          totalArray.push(data.total)
         })
-        const rec2 = records.SupplierLedger.map((data, index) => {
-          return data.paymentDate
-        })
-         a.setSPaid(rec)
-         a.setSTime(rec2)
+        setData(totalArray)
 
-       
-        a.setSLoading(false)
+        records.data.data.forEach((data, index) => {
+          dateArray.push(moment(data.date).format('DD/MM/YYYY'))
+        })
+        setData2(dateArray)
+        setLoading(false)
       })
       .catch((error) => console.log(error))
   }, [])
 
-  
-  return a.SisLoading ? (
+
+  return isLoading ? (
     <div className="text-center">
       <div className="spinner-border" role="status">
         <span className="sr-only">Loading...</span>
@@ -78,12 +76,11 @@ const SupplierLedgerGraph = () => {
   ) : (
     <MDBContainer>
       <Row  >
-      <Col xs={6} md={6}> <h3 className="mt-5">Supplier Ledger</h3> </Col> 
-      <Col xs={6} md={6}> <h6 className="mt-5">   <SDropDown className="mt-5"/> </h6> </Col> 
+        <Col xs={6} md={6}> <h3 className="mt-5">Purchases</h3> </Col>
       </Row>
       <Line overflow="scroll" data={dataMine} options={{ responsive: true }} />
     </MDBContainer>
   )
 }
 
-export default SupplierLedgerGraph
+export default PurchaseGraph

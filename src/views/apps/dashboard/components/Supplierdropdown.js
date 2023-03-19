@@ -5,6 +5,8 @@ import { Dropdown, Selection } from 'react-dropdown-now'
 import 'react-dropdown-now/style.css'
  import DashContext from '../context/dashContext'
  import baseURL from '../../../../baseURL/baseURL'
+import axios from 'axios'
+import Cookies from 'js-cookie'
 
   const Supplierdropdown = () => {
    
@@ -17,15 +19,14 @@ import 'react-dropdown-now/style.css'
 
 
     const getAllData = () => {
-      fetch(`${baseURL}/supplierLedgerCurrentMonth`)     
-      .then((response) => response.json())
+      axios.get(`${baseURL}/generals/getDashboardStats?user_id=${Cookies.get("id")}`)
       .then((records) => {
-        const rec = records.SupplierLedger.map((data, index) => {
-          return data.remaining
-        })
-        const rec2 = records.SupplierLedger.map((data, index) => {
-          return data.paymentDate
-        })
+        // const rec = records.data.data.map((data, index) => {
+          return records.data.data.totalSales
+        // })
+        // const rec2 = records.data.data.map((data, index) => {
+          return '22/03/2022'
+        // })
          a.setSPaid(rec)
          a.setSTime(rec2)
 
