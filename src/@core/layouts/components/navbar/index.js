@@ -15,6 +15,7 @@ import NavbarBookmarks from './NavbarBookmarks'
 import { Sun, Moon } from 'react-feather'
 import { NavItem, NavLink } from 'reactstrap'
 import Cookies from 'js-cookie'
+import EditableText from './EditableText'
 
 const ThemeNavbar = props => {
   // ** Props
@@ -35,11 +36,14 @@ const ThemeNavbar = props => {
         <NavbarBookmarks setMenuVisibility={setMenuVisibility} />
         <h3 className='text-left' style={{
           paddingTop: 5,
-          paddingLeft:15
-        }}> {Cookies.get('name')}</h3>
+          paddingLeft: 15
+        }}>
+          {/* {Cookies.get('name')} */}
+          <EditableText text={Cookies.get('name')} />
+        </h3>
       </div>
       <ul>
-   
+
       </ul>
       <ul className='nav navbar-nav align-items-center ml-auto'>
         {/* <IntlDropdown /> */}

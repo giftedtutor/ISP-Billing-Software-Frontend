@@ -119,7 +119,7 @@ const Login = props => {
         console.log(data)
         if (res.message === "Logged In Successfully!") {
 
-          Cookies.set("name", `${res.data.first_name} ${res.data.last_name}`)
+          Cookies.set("name", res.data.first_name)
           Cookies.set("email", res.data.email)
           Cookies.set("id", res.data._id)
           Cookies.set("userID", res.data._id)
