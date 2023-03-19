@@ -19,7 +19,7 @@ import baseURL from '../../../../baseURL/baseURL'
 
    
     const populateDropdown = () => {     
-      fetch(`${baseURL}/getClientsDropdown`)   
+      fetch(`${baseURL}/getClientsDropdown?user_id=${Cookies.get("id")}`)   
         .then((response) => response.json())
         .then((records) => {
         

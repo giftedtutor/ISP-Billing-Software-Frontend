@@ -93,7 +93,7 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
 
   useEffect(() => {
 
-    axios.get(`${baseURL}/packages/getPackagesDropdown`)
+    axios.get(`${baseURL}/packages/getPackagesDropdown?user_id=${Cookies.get("id")}`)
       .then((response) => {
         const rec = response.data.map(({ _id, name }) => ({
           id: _id,
@@ -104,7 +104,7 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
       }).catch((err) => console.log(err))
 
 
-    axios.get(`${baseURL}/devices/getDevicesDropdown`)
+    axios.get(`${baseURL}/devices/getDevicesDropdown?user_id=${Cookies.get("id")}`)
       .then((response) => {
         const rec = response.data.map(({ _id, name }) => ({
           id: _id,

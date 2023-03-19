@@ -52,7 +52,7 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
 
   useEffect(() => {
 
-    axios.get(`${baseURL}/packages/getPackagesDropdown`)
+    axios.get(`${baseURL}/packages/getPackagesDropdown?user_id=${Cookies.get("id")}`)
       .then((response) => {
         const rec = response.data.map(({ _id, name }) => ({
           id: _id,

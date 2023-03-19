@@ -36,7 +36,7 @@ import 'react-dropdown-now/style.css'
     }
 
     useEffect(() => {
-      fetch(`${baseURL}/getSuppliersDropdown`)          
+      fetch(`${baseURL}/getSuppliersDropdown?user_id=${Cookies.get("id")}`)          
         .then((response) => response.json())
         .then((records) => {
         

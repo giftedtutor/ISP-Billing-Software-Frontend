@@ -104,8 +104,7 @@ const UsersList = () => {
   }, [pageNo, record, refresh, grade, SidebarAddOpen, SidebarEditOpen])
 
   const filterDataOfEachColumn = getData.filter(item => {
-    return search !== "" ? item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.serial_no.toLowerCase().includes(search.toLowerCase()) ||
+    return search !== "" ? item.serial_no.toLowerCase().includes(search.toLowerCase()) ||
       item.remarks.toLowerCase().includes(search.toLowerCase()) ||
       item.discount.toString().includes(search.toString()) ||
       item.total.toString().includes(search.toString()) ||
@@ -117,7 +116,6 @@ const UsersList = () => {
       <tr>
         <th scope="row">{index + 1}</th>
         <th scope="row">{data.serial_no}</th>
-        <td>{data.name}</td>
         <td>{data.remarks}</td>
         <td>{data.total}</td>
         <td>{data.discount}</td>
@@ -269,6 +267,7 @@ const UsersList = () => {
                                 <th scope="col">Sr. No</th>
                                 <th scope="col">Device</th>
                                 <th scope="col">Package</th>
+                                <th scope="col">Customer</th>
                                 <th scope="col">Unit Price</th>
                                 <th scope="col">Qunatity</th>
                                 <th scope="col">Total</th>
@@ -281,9 +280,10 @@ const UsersList = () => {
                                     <th scope="row">{index + 1}</th>
                                     <td>{data?.device_id?.name}</td>
                                     <td>{data?.package_id?.name}</td>
+                                    <td>{data?.customer_id?.name}</td>
 
                                     <td className="text-right">{data.unit_price}</td>
-                                    <td className="text-right">{data.quantity}</td>
+                                    <td className="text-right">{`${data.quantity} ${data?.package_id ? 'MBs' : ''}`}</td>
                                     <td className="text-right">{data.total}</td>
                                   </tr>
                                 )
@@ -387,9 +387,8 @@ const UsersList = () => {
                       <tr>
                         <th scope="col">Sr. No</th>
                         <th scope="col">Sale No</th>
-                        <th scope="col">Name</th>
                         <th scope="col">Remarks</th>
-                      
+
                         <th scope="col">Total</th>
                         <th scope="col">Discount</th>
                         <th scope="col">Total After Discount</th>
