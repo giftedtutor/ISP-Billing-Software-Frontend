@@ -26,7 +26,7 @@ const generatePDF = (ExpenseData) => {
     doc.setFont(undefined, 'normal')
 
     doc.setFontSize(12)
-    const tableColumn = ["Sr. No", "PO No", "Name", "Total", "Discount", "Total After Discount"]
+    const tableColumn = ["Sr. No", "PO No", "Total", "Discount", "Total After Discount"]
 
     const tableRows = []
 
@@ -34,7 +34,6 @@ const generatePDF = (ExpenseData) => {
         const TableData = [
             index + 1,
             data.serial_no,
-            data.name,
             data.total.toLocaleString(undefined, { maximumFractionDigits: 2 }),
             data.discount.toLocaleString(undefined, { maximumFractionDigits: 2 }),
             data.total_after_discount.toLocaleString(undefined, { maximumFractionDigits: 2 }),

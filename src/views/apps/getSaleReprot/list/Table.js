@@ -69,10 +69,9 @@ const UsersList = () => {
 
   const filterDataOfEachColumn = getData.filter(item => {
     return search !== "" ? item.serial_no.toLowerCase().includes(search.toLowerCase()) ||
-      item.name.toLowerCase().includes(search.toLowerCase()) ||
       item.date.toLowerCase().includes(search.toLowerCase()) ||
-      item.discount.toLowerCase().includes(search.toLowerCase()) ||
-      item.total_after_discount.toLowerCase().includes(search.toLowerCase()) ||
+      item.discount.toString().includes(search.toString()) ||
+      item.total_after_discount.toString().includes(search.toString()) ||
       item.total.toString().includes(search.toString()) : item
   })
   const TableData = filterDataOfEachColumn.map((data, index) => {
@@ -80,7 +79,6 @@ const UsersList = () => {
       <tr>
         <th scope="row">{index + 1}</th>
         <th scope="row">{data.serial_no}</th>
-        <td>{data.name}</td>
         <td>{data.total}</td>
         <td>{data.discount}</td>
         <td>{data.total_after_discount}</td>
@@ -186,7 +184,6 @@ const UsersList = () => {
                       <tr>
                         <th scope="col">Sr. No</th>
                         <th scope="col">PO No</th>
-                        <th scope="col">Name</th>
                         <th scope="col">Total</th>
                         <th scope="col">Discount</th>
                         <th scope="col">Total After Discount</th>
