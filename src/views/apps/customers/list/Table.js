@@ -104,17 +104,22 @@ const UsersList = () => {
   }, [pageNo, record, refresh, grade, SidebarAddOpen, SidebarEditOpen])
 
   const filterDataOfEachColumn = getData.filter(item => {
+    if (item.customer_id === undefined) {
+      item.customer_id = ''
+    }
     return search !== "" ? item.name.toLowerCase().includes(search.toLowerCase()) ||
       item.father_name.toLowerCase().includes(search.toLowerCase()) ||
       item.address.toLowerCase().includes(search.toLowerCase()) ||
       item.email.toLowerCase().includes(search.toLowerCase()) ||
       item.date.toLowerCase().includes(search.toLowerCase()) ||
+      item.customer_id.toLowerCase().includes(search.toLowerCase()) ||
       item.cnic.toLowerCase().includes(search.toLowerCase()) : item
   })
   const TableData = filterDataOfEachColumn.map((data, index) => {
     return (
       <tr>
         <th scope="row">{index + 1}</th>
+        <th scope="row">{data.customer_id}</th>
         <th scope="row">{data.name}</th>
         <td>{data.father_name}</td>
         <td>{data.email}</td>
@@ -270,19 +275,19 @@ const UsersList = () => {
                     <Card>
                       <CardBody>
                         <CardText>
-                        Name: {packageDetail?.name}
+                          Name: {packageDetail?.name}
                         </CardText>
                         <CardText>
-                        Type: {packageDetail?.package_type}
+                          Type: {packageDetail?.package_type}
                         </CardText>
                         <CardText>
-                        Price: {packageDetail?.price}
+                          Price: {packageDetail?.price}
                         </CardText>
                         <CardText>
-                        Detail: {packageDetail?.detail}
+                          Detail: {packageDetail?.detail}
                         </CardText>
                         <CardText>
-                        Status: {packageDetail?.status}
+                          Status: {packageDetail?.status}
                         </CardText>
                       </CardBody>
                     </Card>
@@ -319,7 +324,7 @@ const UsersList = () => {
                 </Col>
                 <Col className='my-md-0 my-1' md='3' ></Col>
                 <Col className='my-md-0 my-1' md='3' >
-                  
+
                 </Col>
                 <Col className='my-md-0 my-1' md='3' >
                   <div className='d-flex align-items-center table-header-actions'>
@@ -379,6 +384,7 @@ const UsersList = () => {
                     <thead>
                       <tr>
                         <th scope="col">Sr. No</th>
+                        <th scope="col">ID</th>
                         <th scope="col">Name</th>
                         <th scope="col">Father Name</th>
                         <th scope="col">Email</th>
@@ -444,7 +450,7 @@ const UsersList = () => {
       </Card>
 
       <SidebarAdd open={SidebarAddOpen} toggleSidebarAdd={toggleSidebarAdd} />
-      <SidebarEdit open={SidebarEditOpen} toggleSidebarEdit={toggleSidebarEdit} editID={editID} setEditID={setEditID}/>
+      <SidebarEdit open={SidebarEditOpen} toggleSidebarEdit={toggleSidebarEdit} editID={editID} setEditID={setEditID} />
     </Fragment >
   )
 }

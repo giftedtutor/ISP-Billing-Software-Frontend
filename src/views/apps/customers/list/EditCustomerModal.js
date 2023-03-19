@@ -66,14 +66,14 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
 
   useEffect(() => {
 
-      
+
     axios.get(`${baseURL}/customers/editCustomer?customer_id=${editID}`)
-    .then((response) => {
-      setEditData(response.data)
-      setCnicBackPic(response.data.cnic_back_pictrue)
-      setCnicFrontPic(response.data.cnic_front_pictrue)
-      setpackageID(response.data.package_id)
-    }).catch((err) => console.log(err))
+      .then((response) => {
+        setEditData(response.data)
+        setCnicBackPic(response.data.cnic_back_pictrue)
+        setCnicFrontPic(response.data.cnic_front_pictrue)
+        setpackageID(response.data.package_id)
+      }).catch((err) => console.log(err))
   }, [editID])
 
   const submitForm = (data, package_id) => {
@@ -83,9 +83,11 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
       _id: editData?._id,
       name: data.name,
       father_name: data.father_name,
-      package_id : package_id === "" ? packageID : package_id,
+      customer_id: data.customer_id,
+      package_id: package_id === "" ? packageID : package_id,
       email: data.email,
       phone_no: data.phone_no,
+      date: data.date,
       address: data.address,
       cnic: data.cnic,
       cnic_front_pictrue: cnicFrontPic,
@@ -99,7 +101,7 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
           setpackageID('')
           setEditID(0)
           setEditData({})
-        
+
         } else {
           toast("Somthing went Wrong - Error")
         }
@@ -127,6 +129,17 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
     >
 
       <Form onSubmit={handleSubmit(onSubmit)}>
+        <FormGroup>
+          <Label for='customer_id'>Customer ID</Label>
+          <Input
+            id='customer_id'
+            name='customer_id'
+            defaultValue={editData?.customer_id}
+            innerRef={register({ required: true })}
+            invalid={errors.customer_id && true}
+            placeholder='Unique ID'
+          />
+        </FormGroup>
         <FormGroup>
           <Label for='name'>Customer Name</Label>
           <Input
@@ -157,8 +170,19 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
             type="email"
             defaultValue={editData?.email}
             placeholder='example@gmail.com'
+            innerRef={register({ required: false })}
+          // invalid={errors.email && true}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for='date'>Joining Date</Label>
+          <Input
+            id='date'
+            name='date'
+            type="date"
+            defaultValue={editData?.date}
             innerRef={register({ required: true })}
-            invalid={errors.email && true}
+            invalid={errors.date && true}
           />
         </FormGroup>
         <FormGroup>
@@ -178,8 +202,8 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
             id='address'
             name='address'
             defaultValue={editData?.address}
-            innerRef={register({ required: true })}
-            invalid={errors.address && true}
+            innerRef={register({ required: false })}
+            // invalid={errors.address && true}
             placeholder='Address'
           />
         </FormGroup>
@@ -223,8 +247,8 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
             onChange={(e) => {
               uploadImageFunction(e.target.files[0], 1)
             }}
-            innerRef={register({ required: true })}
-            invalid={errors.cnic_front_pictrue && true}
+            innerRef={register({ required: false })}
+          // invalid={errors.cnic_front_pictrue && true}
           />
         </FormGroup>
         <FormGroup>
@@ -237,8 +261,8 @@ const SidebarEdit = ({ open, toggleSidebarEdit, editID, setEditID }) => {
             onChange={(e) => {
               uploadImageFunction(e.target.files[0], 2)
             }}
-            innerRef={register({ required: true })}
-            invalid={errors.cnic_back_pictrue && true}
+            innerRef={register({ required: false })}
+          // invalid={errors.cnic_back_pictrue && true}
           />
         </FormGroup>
         <FormGroup className='d-flex mb-0'>

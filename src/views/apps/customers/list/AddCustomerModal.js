@@ -69,9 +69,11 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
       user_id: Cookies.get("id"),
       name: data.name,
       father_name: data.father_name,
+      customer_id: data.customer_id,
       package_id,
       email: data.email,
       phone_no: data.phone_no,
+      date: data.date,
       address: data.address,
       cnic: data.cnic,
       cnic_front_pictrue: cnicFrontPic,
@@ -111,6 +113,16 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
 
       <Form onSubmit={handleSubmit(onSubmit)}>
         <FormGroup>
+          <Label for='customer_id'>Customer ID</Label>
+          <Input
+            id='customer_id'
+            name='customer_id'
+            innerRef={register({ required: true })}
+            invalid={errors.customer_id && true}
+            placeholder='Unique ID'
+          />
+        </FormGroup>
+        <FormGroup>
           <Label for='name'>Customer Name</Label>
           <Input
             id='name'
@@ -137,8 +149,18 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
             name='email'
             type="email"
             placeholder='example@gmail.com'
+            innerRef={register({ required: false })}
+          // invalid={errors.email && true}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for='date'>Joining Date</Label>
+          <Input
+            id='date'
+            name='date'
+            type="date"
             innerRef={register({ required: true })}
-            invalid={errors.email && true}
+            invalid={errors.date && true}
           />
         </FormGroup>
         <FormGroup>
@@ -156,8 +178,8 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
           <Input
             id='address'
             name='address'
-            innerRef={register({ required: true })}
-            invalid={errors.address && true}
+            innerRef={register({ required: false })}
+            // invalid={errors.address && true}
             placeholder='Address'
           />
         </FormGroup>
