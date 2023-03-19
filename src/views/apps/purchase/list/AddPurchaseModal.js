@@ -19,8 +19,8 @@ import { useFormik } from 'formik'
 
 const validate = values => {
   let errors = {}
-  if (!values.name) {
-    errors.name = "This field is required!"
+  if (!values.date) {
+    errors.date = "This field is required!"
   }
   if (!values.serial_no) {
     errors.serial_no = "This field is required!"
@@ -61,10 +61,33 @@ const validate = values => {
 const SidebarAdd = ({ open, toggleSidebarAdd }) => {
   const [deviceSelectedValue, setDeviceSelectedValue] = useState([])
   const [packageSelectedValue, setPackageSelectedValue] = useState([])
+  const [unitSelectedValue, setUnitSelectedValue] = useState([])
   const [packageOptions, setPackageOptions] = useState([])
   const [deviceOptions, setDeviceOptions] = useState([])
   const [isDevice, setIsdevice] = useState(true)
 
+  const unitOptions = [
+    {
+      id: 1,
+      value: 'KBs',
+      label: 'KBs'
+    },
+    {
+      id: 1,
+      value: 'MBs',
+      label: 'MBs'
+    },
+    {
+      id: 1,
+      value: 'GBs',
+      label: 'GBs'
+    },
+    {
+      id: 1,
+      value: 'TBs',
+      label: 'TBs'
+    }
+  ]
   useEffect(() => {
 
     axios.get(`${baseURL}/packages/getPackagesDropdown`)
@@ -114,7 +137,7 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
   const formik = useFormik({
     initialValues: {
       user_id: Cookies.get("id"),
-      name: '',
+      date: '',
       remarks: '',
       serial_no: '',
       discount: 0,
@@ -134,6 +157,8 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
     setDeviceSelectedValue(deviceSelectedValue)
     packageSelectedValue.splice(i, 1)
     setPackageSelectedValue(packageSelectedValue)
+    unitSelectedValue.splice(i, 1)
+    setUnitSelectedValue(unitSelectedValue)
     formik.setFieldValue('products', [
       ...formik.values.products.slice(0, i),
       ...formik.values.products.slice(i + 1)
@@ -147,7 +172,9 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
     })
     formik.setFieldValue('total', grandTotal)
     formik.setFieldValue('total_after_discount', grandTotal - formik.values.discount)
+    console.log('......', formik.values.products)
   }, [formik.values.products, formik.values.discount])
+
 
   return (
     <Sidebar
@@ -192,26 +219,26 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
           </Col>
           <Col sm={12} md={3}>
             <FormGroup >
-              <Label for='name'>Name</Label>
+              <Label for='date'>Date</Label>
               <Input
-                id='name'
-                name='name'
-                placeholder='Give a Name'
+                id='date'
+                name='date'
+                type="date"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.name}
+                value={formik.values.date}
                 isValid={formik.isValid}
-                isTouched={formik.touched.name}
-                invalidFeedback={formik.errors.name}
+                isTouched={formik.touched.date}
+                invalidFeedback={formik.errors.date}
                 validFeedback="Looks good!"
               />
-              {formik.errors.name && (
+              {formik.errors.date && (
                 <p
                   style={{
                     color: "red"
                   }}
                 >
-                  {formik.errors.name}
+                  {formik.errors.date}
                 </p>
               )}
             </FormGroup>
@@ -235,12 +262,12 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
             </FormGroup>
           </Col>
           <Col sm={12} md={2}>
-             <FormGroup className='mt-2'>
-            <div className='d-flex'>
-              <p className='font-weight-bold mr-auto mb-0'>{isDevice ? "Purchase For Devices" : "Purchase For Packages"}</p>
-              <CustomInput type='switch' id='chnage' checked={isDevice} onChange={() => setIsdevice(!isDevice)} />
-            </div>
-          </FormGroup>
+            <FormGroup className='mt-2'>
+              <div className='d-flex'>
+                <p className='font-weight-bold mr-auto mb-0'>{isDevice ? "Purchase For Devices" : "Purchase For Packages"}</p>
+                <CustomInput type='switch' id='chnage' checked={isDevice} onChange={() => setIsdevice(!isDevice)} />
+              </div>
+            </FormGroup>
           </Col>
           <FormGroup className='mb-2'>
 
@@ -365,7 +392,7 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
                         `products[${index}].unit_price`,
                         val.target.value
                       )
-                      formik.setFieldValue(`products[${index}].total`, (formik.values.products[index].quantity * val.target.value))
+                      formik.setFieldValue(`products[${index}].total`, ((isDevice === false ? 1 : formik.values.products[index].quantity) * val.target.value))
                     }}
                     onBlur={formik.handleBlur}
                     value={formik.values.products[index].unit_price}
@@ -405,7 +432,7 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
                         `products[${index}].quantity`,
                         val.target.value
                       )
-                      formik.setFieldValue(`products[${index}].total`, (val.target.value * formik.values.products[index].unit_price))
+                      formik.setFieldValue(`products[${index}].total`, ((isDevice === false ? 1 : val.target.value) * formik.values.products[index].unit_price))
                     }}
                     onBlur={formik.handleBlur}
                     value={formik.values.products[index].quantity}
@@ -430,20 +457,55 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
                     )}
                 </FormGroup>
               </Col>
-              <Col sm={12} md={2}>
-                <FormGroup>
-                  <Label for='total'>Quantity</Label>
-                  <Input
-                    id={`products[${index}].total`}
-                    name='total'
-                    disabled
-                    type="Number"
-                    value={formik.values.products[index].quantity * formik.values.products[index].unit_price}
+              {isDevice ? '' : (
+                <Col sm={12} md={2}>
+                  <FormGroup>
+                    <Label for='unit'>Unit</Label>
 
-                  />
+                    <Select
+                      isClearable={false}
+                      classNamePrefix='select'
+                      options={unitOptions}
+                      type="text"
+                      name='unit'
+                      id='unit'
+                      placeholder='Select Unit'
+                      onFocus={e => e.target.select()}
 
-                </FormGroup>
-              </Col>
+                      onChange={(e) => {
+                        formik.setFieldValue(
+                          `products[${index}].unit`,
+                          e.value
+                        )
+                        unitSelectedValue[index] = e
+                      }}
+                      onBlur={formik.handleBlur}
+                      value={unitSelectedValue[index]}
+                      isValid={formik.isValid}
+                      isTouched={formik.touched.unit}
+                      validFeedback="Looks good!"
+
+                    />
+                  </FormGroup>
+                </Col>
+              )}
+              {!isDevice ? '' : (
+                <Col sm={12} md={2}>
+                  <FormGroup>
+                    <Label for='total'>Total</Label>
+                    <Input
+                      id={`products[${index}].total`}
+                      name='total'
+                      disabled
+                      type="Number"
+                      value={formik.values.products[index].quantity * formik.values.products[index].unit_price}
+
+                    />
+
+                  </FormGroup>
+                </Col>
+              )}
+
               <Col sm={12} md={1}>
                 <Button className="mt-2" color="danger" onClick={() => {
                   removeRow(index)
@@ -523,7 +585,7 @@ const SidebarAdd = ({ open, toggleSidebarAdd }) => {
             Submit
           </Button.Ripple>
           <Button.Ripple className='mr-1 mt-2' outline color='secondary' onClick={() => {
-            formik.setFieldValue('name', '')
+            formik.setFieldValue('date', '')
             formik.setFieldValue('remarks', '')
             formik.setFieldValue('serial_no', '')
             formik.setFieldValue('discount', 0)
