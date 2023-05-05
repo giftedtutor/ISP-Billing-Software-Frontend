@@ -3,13 +3,15 @@ import Cookies from "js-cookie"
 import jsPDF from "jspdf"
 import "jspdf-autotable"
 import moment from "moment"
+import baseURL from "../../../../baseURL/baseURL"
 // import pakLogo from '../../../../../assets/images/logo/ISPBS_logo.jpg'
 
 const generatePDF = (ExpenseData, totalAmount) => {
 
+    console.log(Cookies.get("profilePicture"))
     let yPos = 10
     const doc = new jsPDF()
-    //   doc.addImage(pakLogo, 'JPEG', 14, yPos, 50, 25)
+    // doc.addImage(`${baseURL}/files/${Cookies.get("profilePicture")}`, 'JPEG', 14, yPos, 50, 25)
     doc.setFontSize(24)
     doc.setFont("arial")
     doc.setFont(undefined, 'bold')
